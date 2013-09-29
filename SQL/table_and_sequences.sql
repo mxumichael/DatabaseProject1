@@ -62,17 +62,26 @@ clinic VARCHAR2(30),
 CONSTRAINT healthsupporterKey PRIMARY KEY(supporterid)
 );
 
+CREATE SEQUENCE Alerts_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
 
 CREATE TABLE Alerts
 (
 alertid NUMBER(10),
 patientid NUMBER(10),
 dttm DATE NOT NULL,
-end_dttm DATE NOT NULL,
+end_dttm DATE,
 type VARCHAR2(30) NOT NULL,
 CONSTRAINT alertKey PRIMARY KEY(alertid,patientid),
 CONSTRAINT fk_alerts_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
+
+CREATE SEQUENCE Diet_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
 
 CREATE TABLE Diet
 (
@@ -86,6 +95,11 @@ CONSTRAINT dietKey PRIMARY KEY(dietid,patientid),
 CONSTRAINT fk_diet_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+CREATE SEQUENCE Weight_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
+
 CREATE TABLE Weight
 (
 weightid NUMBER(10),
@@ -97,6 +111,10 @@ CONSTRAINT weightKey PRIMARY KEY(weightid,patientid),
 CONSTRAINT fk_weight_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+CREATE SEQUENCE Exercise_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
 
 CREATE TABLE Exercise
 (
@@ -110,6 +128,11 @@ CONSTRAINT exerciseKey PRIMARY KEY(exerciseid,patientid),
 CONSTRAINT fk_exercise_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+CREATE SEQUENCE BloodPressure_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
+
 CREATE TABLE BloodPressure
 (
 bpid NUMBER(10),
@@ -122,6 +145,13 @@ CONSTRAINT bpKey PRIMARY KEY(bpid,patientid),
 CONSTRAINT fk_bloodpressure_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+
+CREATE SEQUENCE ExerciseTolerance_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
+
+
 CREATE TABLE ExerciseTolerance
 (
 etid NUMBER(10),
@@ -132,6 +162,13 @@ rec_dttm DATE NOT NULL,
 CONSTRAINT etKey PRIMARY KEY(etid,patientid),
 CONSTRAINT fk_et_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
+
+
+CREATE SEQUENCE Ox_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
+
 
 CREATE TABLE OxSaturation
 (
@@ -144,6 +181,11 @@ CONSTRAINT oxKey PRIMARY KEY(oxid,patientid),
 CONSTRAINT fk_ox_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+CREATE SEQUENCE Pain_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
+
 CREATE TABLE Pain
 (
 painid NUMBER(10),
@@ -154,6 +196,11 @@ rec_dttm DATE NOT NULL,
 CONSTRAINT painKey PRIMARY KEY(painid,patientid),
 CONSTRAINT fk_pain_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
+
+CREATE SEQUENCE Mood_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
 
 CREATE TABLE Mood
 (
