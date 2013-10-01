@@ -1,19 +1,37 @@
 /* DROP TABLES */
-drop table PAIN                   ;
-drop table MOOD                   ;
-drop table CONTRACTION            ;
-drop table TEMPERATURE            ;
-drop table DIET                   ;
-drop table WEIGHT                 ;
-drop table EXERCISE               ;
-drop table BLOODPRESSURE          ;
-drop table EXERCISETOLERANCE      ;
-drop table OXSATURATION           ;
-drop table HEALTHFRIEND           ;
-drop table PROBLEMS               ;
-drop table HEALTHSUPPORTER        ;
-drop table ALERTS                 ;
-drop table PATIENT                ;
+DROP table PAIN                   ;
+DROP table MOOD                   ;
+DROP table CONTRACTION            ;
+DROP table TEMPERATURE            ;
+DROP table DIET                   ;
+DROP table WEIGHT                 ;
+DROP table EXERCISE               ;
+DROP table BLOODPRESSURE          ;
+DROP table EXERCISETOLERANCE      ;
+DROP table OXSATURATION           ;
+DROP table HEALTHFRIEND           ;
+DROP table PROBLEMS               ;
+DROP table HEALTHSUPPORTER        ;
+DROP table ALERTS                 ;
+DROP table PATIENT                ;
+
+/*DROP sequences*/
+DROP SEQUENCE Ox_seq                   ;
+DROP SEQUENCE PAIN_seq                   ;
+DROP SEQUENCE MOOD_seq                   ;
+DROP SEQUENCE CONTRACTION_seq            ;
+DROP SEQUENCE TEMPERATURE_seq            ;
+DROP SEQUENCE DIET_seq                   ;
+DROP SEQUENCE WEIGHT_seq                 ;
+DROP SEQUENCE EXERCISE_seq               ;
+DROP SEQUENCE BLOODPRESSURE_seq          ;
+DROP SEQUENCE EXERCISETOLERANCE_seq      ;
+DROP SEQUENCE OXSATURATION_seq           ;
+DROP SEQUENCE HEALTHFRIEND_seq           ;
+DROP SEQUENCE PROBLEMS_seq               ;
+DROP SEQUENCE HEALTHSUPPORTER_seq        ;
+DROP SEQUENCE ALERTS_SEQ                ;
+DROP SEQUENCE PATIENTIDS_seq                ;
 
 
 

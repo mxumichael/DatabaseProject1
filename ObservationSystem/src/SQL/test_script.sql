@@ -5,25 +5,25 @@
 
 /*PATIENT*/
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (1.0, to_date('01/01/1986', 'MM/DD/YYYY'), 'Gary', 'George', '2806 Conifer Drive', 'Raleigh', 'NC', 27606.0, 'M', 'Y');
+VALUES (1.0, to_date('01/01/1986', 'MM/DD/YYYY'), 'Gary', 'George', '2806 Conifer Drive', 'Raleigh', 'NC', 27606.0, 'M', 'T');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (2.0, to_date('01/02/1986', 'MM/DD/YYYY'), 'Adnan', 'Kazi', '1234 Capability Drive', ' Raleigh', 'NC', 27655.0, 'F', 'Y');
+VALUES (2.0, to_date('01/02/1986', 'MM/DD/YYYY'), 'Adnan', 'Kazi', '1234 Capability Drive', ' Raleigh', 'NC', 27655.0, 'F', 'T');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (3.0, to_date('01/03/1986', 'MM/DD/YYYY'), 'Neha', 'Shetty', '440 Sullivan Drive', ' Chapel Hill', 'NC', 27517.0, 'F', 'Y');
+VALUES (3.0, to_date('01/03/1986', 'MM/DD/YYYY'), 'Neha', 'Shetty', '440 Sullivan Drive', ' Chapel Hill', 'NC', 27517.0, 'F', 'T');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (4.0, to_date('01/04/1986', 'MM/DD/YYYY'), 'Sheldon', 'Cooper', '2808 Avent Ferry Road', ' Raleigh', 'NC', 27616.0, 'F', 'Y');
+VALUES (4.0, to_date('01/04/1986', 'MM/DD/YYYY'), 'Sheldon', 'Cooper', '2808 Avent Ferry Road', ' Raleigh', 'NC', 27616.0, 'F', 'T');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (5.0, to_date('01/05/1986', 'MM/DD/YYYY'), 'Michael', 'Watson', '2222 Gorman Street', ' Raleigh', 'NC', 27678.0, 'M', 'Y');
+VALUES (5.0, to_date('01/05/1986', 'MM/DD/YYYY'), 'Michael', 'Watson', '2222 Gorman Street', ' Raleigh', 'NC', 27678.0, 'M', 'T');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (6.0, to_date('01/06/1986', 'MM/DD/YYYY'), 'Tom', 'Kerr', '1430 Collegeview Ave', ' Durham', 'NC', 27701.0, 'M', 'Y');
+VALUES (6.0, to_date('01/06/1986', 'MM/DD/YYYY'), 'Tom', 'Kerr', '1430 Collegeview Ave', ' Durham', 'NC', 27701.0, 'M', 'T');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (7.0, to_date('01/07/1986', 'MM/DD/YYYY'), 'Maya', 'Tran', '100 Brown Circle', ' Chapel Hill', 'NC', 27516.0, 'F', 'Y');
+VALUES (7.0, to_date('01/07/1986', 'MM/DD/YYYY'), 'Maya', 'Tran', '100 Brown Circle', ' Chapel Hill', 'NC', 27516.0, 'F', 'T');
 
 /*PROBLEMS*/
 SET DEFINE OFF
