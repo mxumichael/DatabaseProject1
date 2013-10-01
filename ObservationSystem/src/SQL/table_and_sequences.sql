@@ -213,6 +213,11 @@ CONSTRAINT moodKey PRIMARY KEY(moodid,patientid),
 CONSTRAINT fk_mood_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+CREATE SEQUENCE Contraction_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
+
 CREATE TABLE Contraction
 (
 contractionid NUMBER(10),
@@ -224,9 +229,14 @@ CONSTRAINT contractionKey PRIMARY KEY(contractionid,patientid),
 CONSTRAINT fk_contraction_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+CREATE SEQUENCE Temperature_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
+
 CREATE TABLE Temperature
 (
-tempid NUMBER(10) IDENTITY(1,1),
+tempid NUMBER(10),
 patientid NUMBER(10),
 temperature NUMBER(3) NOT NULL,
 dttm DATE NOT NULL,
