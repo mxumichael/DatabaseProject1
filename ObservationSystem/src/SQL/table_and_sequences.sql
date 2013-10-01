@@ -1,3 +1,22 @@
+/* DROP TABLES */
+drop table PAIN                   ;
+drop table MOOD                   ;
+drop table CONTRACTION            ;
+drop table TEMPERATURE            ;
+drop table DIET                   ;
+drop table WEIGHT                 ;
+drop table EXERCISE               ;
+drop table BLOODPRESSURE          ;
+drop table EXERCISETOLERANCE      ;
+drop table OXSATURATION           ;
+drop table HEALTHFRIEND           ;
+drop table PROBLEMS               ;
+drop table HEALTHSUPPORTER        ;
+drop table ALERTS                 ;
+drop table PATIENT                ;
+
+
+
 CREATE SEQUENCE Patientids_seq
 START WITH 1
 INCREMENT BY 1
