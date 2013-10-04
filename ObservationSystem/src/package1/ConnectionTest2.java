@@ -10,11 +10,13 @@ import java.util.Properties;
 /**
  * Simple Java Program to connect Oracle database by using Oracle JDBC thin driver
  * Make sure you have Oracle JDBC thin driver in your classpath before running this program
+ * 
+ * This test runs a simple select statement on the patient table and returns the patient id and the first name of each patient.
  * @author
  */
 public class ConnectionTest2 {
 
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) {
 		//URL of Oracle database server
 		String url = "jdbc:oracle:thin:@ora.csc.ncsu.edu:1521:ORCL"; 
 
@@ -24,19 +26,31 @@ public class ConnectionTest2 {
 		props.setProperty("password", "abc123");
 
 		//creating connection to Oracle database using JDBC
-		Connection conn = DriverManager.getConnection(url,props);
+		Connection conn;
+		try {
+			conn = DriverManager.getConnection(url,props);
+			try{
+				String sql ="select patientid,fname from patient";
 
-		String sql ="select * from mxu.student";
+				//creating PreparedStatement object to execute query
+				PreparedStatement preStatement = conn.prepareStatement(sql);
 
-		//creating PreparedStatement object to execute query
-		PreparedStatement preStatement = conn.prepareStatement(sql);
+				ResultSet result = preStatement.executeQuery();
 
-		ResultSet result = preStatement.executeQuery();
-		
-		while(result.next()){
-			System.out.println(" " +result.getString(1)+"," +result.getString(2));
+				while(result.next()){
+					System.out.println(" " +result.getString(1)+"," +result.getString(2));
+				}
+				System.out.println("done");
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+			finally {
+				conn.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		System.out.println("done");
 
 	}
 	/*	Output:
