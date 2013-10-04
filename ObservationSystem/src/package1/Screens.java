@@ -10,11 +10,12 @@ public class Screens {
 	public static void main(String args[]){
 
 		System.out.println("helloworld");
+		StartScreen();
 	}
 
 
-	public String StartScreen(){
-		String userinput;
+	public static String StartScreen(){
+		String userinput = "";
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in)); 
 		try {
 			System.out.println("  1. Login                                                                 ");
