@@ -8,9 +8,11 @@ import java.io.InputStreamReader;
 public class Screens {
 
 	public static void main(String args[]){
-
+		String userinput = "";
 		System.out.println("helloworld");
-		StartScreen();
+		userinput = StartScreen();
+		System.out.println("inputed "+ userinput);
+
 	}
 
 
@@ -24,7 +26,6 @@ public class Screens {
 			System.out.println("  Enter choice                                                             ");
 			//		System.out.println("                                                                           ");
 			userinput = in.readLine();
-			System.out.println("inputed "+ userinput);
 			in.close();
 		} catch (IOException e) {
 			e.printStackTrace();
