@@ -239,11 +239,13 @@ BEGIN
 END;
 
 --END BP
+
+--BEGIN ET
+
 CREATE SEQUENCE ExerciseTolerance_seq
 START WITH 1
 INCREMENT BY 1
 CACHE 20;
-
 
 CREATE TABLE ExerciseTolerance
 (
@@ -256,12 +258,23 @@ CONSTRAINT etKey PRIMARY KEY(etid,patientid),
 CONSTRAINT fk_et_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+--Create an alert when ET entry has steps under 100
+CREATE OR REPLACE TRIGGER et_trigger
+  AFTER INSERT ON ExerciseTolerance
+  FOR EACH ROW
+WHEN (new.steps < 100)
+BEGIN
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
+                              CURRENT_TIMESTAMP(3), NULL, 'Exercise tolerance under 100 steps','T');	
+END;
+--END ET
+
+--BEGIN OX_SAT
 
 CREATE SEQUENCE Ox_seq
 START WITH 1
 INCREMENT BY 1
 CACHE 20;
-
 
 CREATE TABLE OxSaturation
 (
@@ -274,6 +287,20 @@ CONSTRAINT oxKey PRIMARY KEY(oxid,patientid),
 CONSTRAINT fk_ox_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+--Create an alert when OxSeq entry is under 95%
+CREATE OR REPLACE TRIGGER oxsat_trigger
+  AFTER INSERT ON OxSaturation
+  FOR EACH ROW
+WHEN (new.amount < 95)
+BEGIN
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
+                              CURRENT_TIMESTAMP(3), NULL, 'O2 saturation under 95%','T');	
+END;
+
+--END OX_SAT
+
+--BEGIN PAIN
+
 CREATE SEQUENCE Pain_seq
 START WITH 1
 INCREMENT BY 1
@@ -283,12 +310,25 @@ CREATE TABLE Pain
 (
 painid NUMBER(10),
 patientid NUMBER(10),
-scale NUMBER(2) NOT NULL,
+scale NUMBER(2) NOT NULL CHECK(scale>0 and scale<=10),
 dttm DATE NOT NULL,
 rec_dttm DATE NOT NULL,
 CONSTRAINT painKey PRIMARY KEY(painid,patientid),
 CONSTRAINT fk_pain_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
+
+--Create an alert when Pain entry is under 95%
+CREATE OR REPLACE TRIGGER oxsat_trigger
+  AFTER INSERT ON OxSaturation
+  FOR EACH ROW
+WHEN (new.amount < 95)
+BEGIN
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
+                              CURRENT_TIMESTAMP(3), NULL, 'O2 saturation under 95%','T');	
+END;
+
+--END PAIN
+
 
 CREATE SEQUENCE Mood_seq
 START WITH 1
