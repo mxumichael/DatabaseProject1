@@ -79,10 +79,10 @@ public class Screens {
 		String userinput = "";
 		for (int x= 0; x< LOOP_LIMIT; x++){
 			System.out.println("  Page under Construction                                                                ");
-			System.out.println("  1. Exit                                                                 ");
+			System.out.println("  1. Previous Screen                                                                 ");
 			userinput = in.readLine();
 			if (userinput.equals("1")){
-				return("1. Exit");
+				return("1. Previous Screen");
 			}
 		}
 		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in create user screen, going to previous screen");
