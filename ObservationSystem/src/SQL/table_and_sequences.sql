@@ -108,10 +108,16 @@ alertid NUMBER(10),
 patientid NUMBER(10),
 dttm DATE NOT NULL,
 end_dttm DATE,
-type VARCHAR2(30) NOT NULL,
+description VARCHAR2(30) NOT NULL,
+--T stands for threshhold alert, D stands for disengaged
+type VARCHAR2(1) CHECK (type in ('T','F','U'))
 CONSTRAINT alertKey PRIMARY KEY(alertid,patientid),
 CONSTRAINT fk_alerts_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
+
+--OBSERVATIONS
+
+--BEGIN DIET
 
 CREATE SEQUENCE Diet_seq
 START WITH 1
@@ -130,6 +136,18 @@ CONSTRAINT dietKey PRIMARY KEY(dietid,patientid),
 CONSTRAINT fk_diet_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+--Create an alert when Diet qty is above 1000 calories
+CREATE OR REPLACE TRIGGER diet_trigger
+  AFTER INSERT ON WEIGHT
+  FOR EACH ROW
+WHEN (new.qty > 1000)
+BEGIN
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, CURRENT_TIMESTAMP(3), NULL, 'A');	
+END;
+
+--END DIET
+
+--BEGIN WEIGHT
 CREATE SEQUENCE Weight_seq
 START WITH 1
 INCREMENT BY 1
@@ -145,6 +163,21 @@ rec_dttm DATE NOT NULL,
 CONSTRAINT weightKey PRIMARY KEY(weightid,patientid),
 CONSTRAINT fk_weight_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
+
+--Create an alert when weight is above 200 LB
+CREATE OR REPLACE TRIGGER weight_trigger
+  AFTER INSERT ON WEIGHT
+  FOR EACH ROW
+WHEN (new.qty > 200)
+BEGIN
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, CURRENT_TIMESTAMP(3), NULL, 'A');	
+END;
+
+--END WEIGHT
+
+
+
+--BEGIN EXERCISE
 
 CREATE SEQUENCE Exercise_seq
 START WITH 1
@@ -162,6 +195,10 @@ rec_dttm DATE NOT NULL,
 CONSTRAINT exerciseKey PRIMARY KEY(exerciseid,patientid),
 CONSTRAINT fk_exercise_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
+
+
+
+--END EXERCISE
 
 CREATE SEQUENCE BloodPressure_seq
 START WITH 1
@@ -279,4 +316,3 @@ rec_dttm DATE NOT NULL,
 CONSTRAINT temperatureKey PRIMARY KEY(tempid,patientid),
 CONSTRAINT fk_temperature_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
-
