@@ -110,7 +110,7 @@ dttm DATE NOT NULL,
 end_dttm DATE,
 description VARCHAR2(30) NOT NULL,
 --T stands for threshhold alert, D stands for disengaged
-type VARCHAR2(1) CHECK (type in ('T','F','U'))
+type VARCHAR2(1) NOT NULL CHECK (type in ('T','D')),
 CONSTRAINT alertKey PRIMARY KEY(alertid,patientid),
 CONSTRAINT fk_alerts_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
@@ -138,16 +138,18 @@ CONSTRAINT fk_diet_patientid FOREIGN KEY (patientid) REFERENCES Patient
 
 --Create an alert when Diet qty is above 1000 calories
 CREATE OR REPLACE TRIGGER diet_trigger
-  AFTER INSERT ON WEIGHT
+  AFTER INSERT ON DIET
   FOR EACH ROW
 WHEN (new.qty > 1000)
 BEGIN
-    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, CURRENT_TIMESTAMP(3), NULL, 'A');	
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
+                              CURRENT_TIMESTAMP(3), NULL, 'Calorie entry over 1000', 'T');	
 END;
 
 --END DIET
 
 --BEGIN WEIGHT
+
 CREATE SEQUENCE Weight_seq
 START WITH 1
 INCREMENT BY 1
@@ -170,12 +172,11 @@ CREATE OR REPLACE TRIGGER weight_trigger
   FOR EACH ROW
 WHEN (new.qty > 200)
 BEGIN
-    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, CURRENT_TIMESTAMP(3), NULL, 'A');	
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
+                              CURRENT_TIMESTAMP(3), NULL, 'Weight entry over 200 LBS','T');	
 END;
 
 --END WEIGHT
-
-
 
 --BEGIN EXERCISE
 
@@ -196,10 +197,20 @@ CONSTRAINT exerciseKey PRIMARY KEY(exerciseid,patientid),
 CONSTRAINT fk_exercise_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+--Create an alert when exercise entry is over 2 hours
+CREATE OR REPLACE TRIGGER exercise_trigger
+  AFTER INSERT ON Exercise
+  FOR EACH ROW
+WHEN (new.duration > 120)
+BEGIN
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
+                              CURRENT_TIMESTAMP(3), NULL, 'Exercise entry over 120 minutes','T');	
+END;
 
 
 --END EXERCISE
 
+--BEGIN BP
 CREATE SEQUENCE BloodPressure_seq
 START WITH 1
 INCREMENT BY 1
@@ -217,7 +228,17 @@ CONSTRAINT bpKey PRIMARY KEY(bpid,patientid),
 CONSTRAINT fk_bloodpressure_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+--Create an alert when BP entry has systolic over 120 or diastolic over 100
+CREATE OR REPLACE TRIGGER exercise_trigger
+  AFTER INSERT ON Exercise
+  FOR EACH ROW
+WHEN (new.systolic > 120 OR new.diastolic > 100)
+BEGIN
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
+                              CURRENT_TIMESTAMP(3), NULL, 'Exercise entry over 120 minutes','T');	
+END;
 
+--END BP
 CREATE SEQUENCE ExerciseTolerance_seq
 START WITH 1
 INCREMENT BY 1
