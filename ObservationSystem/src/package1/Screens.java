@@ -40,7 +40,6 @@ public class Screens {
 			}
 			else {
 				System.out.println("login Not Valid, please try again.");
-				return("2. Login was NOT Valid");
 			}
 		}
 		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
