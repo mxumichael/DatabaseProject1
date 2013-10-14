@@ -317,18 +317,19 @@ CONSTRAINT painKey PRIMARY KEY(painid,patientid),
 CONSTRAINT fk_pain_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
---Create an alert when Pain entry is under 95%
-CREATE OR REPLACE TRIGGER oxsat_trigger
-  AFTER INSERT ON OxSaturation
+--Create an alert when Pain entry is above 5
+CREATE OR REPLACE TRIGGER pain_trigger
+  AFTER INSERT ON Pain
   FOR EACH ROW
-WHEN (new.amount < 95)
+WHEN (new.scale > 5)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'O2 saturation under 95%','T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'Pain entry is above 5','T');	
 END;
 
 --END PAIN
 
+--BEGIN MOOD
 
 CREATE SEQUENCE Mood_seq
 START WITH 1
@@ -346,6 +347,19 @@ CONSTRAINT moodKey PRIMARY KEY(moodid,patientid),
 CONSTRAINT fk_mood_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+--Create an alert when Mood entry is [S]ad
+CREATE OR REPLACE TRIGGER mood_trigger
+  AFTER INSERT ON Mood
+  FOR EACH ROW
+WHEN (new.mood ='S')
+BEGIN
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
+                              CURRENT_TIMESTAMP(3), NULL, 'Mood entry is [S]ad','T');	
+END;
+
+--END MOOD
+
+--BEGIN Contraction
 CREATE SEQUENCE Contraction_seq
 START WITH 1
 INCREMENT BY 1
@@ -362,6 +376,18 @@ CONSTRAINT contractionKey PRIMARY KEY(contractionid,patientid),
 CONSTRAINT fk_contraction_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
+--Create an alert when Contraction entry is >5 per hour
+CREATE OR REPLACE TRIGGER contraction_trigger
+  AFTER INSERT ON Contraction
+  FOR EACH ROW
+WHEN (new.frequency >5)
+BEGIN
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
+                              CURRENT_TIMESTAMP(3), NULL, 'Contractions greater than 5 per hour','T');	
+END;
+
+--END CONTRACTION
+
 CREATE SEQUENCE Temperature_seq
 START WITH 1
 INCREMENT BY 1
@@ -377,3 +403,15 @@ rec_dttm DATE NOT NULL,
 CONSTRAINT temperatureKey PRIMARY KEY(tempid,patientid),
 CONSTRAINT fk_temperature_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
+
+--Create an alert when Temperature entry is >100degF
+CREATE OR REPLACE TRIGGER temperature_trigger
+  AFTER INSERT ON Temperature
+  FOR EACH ROW
+WHEN (new.temperature >100)
+BEGIN
+    INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
+                              CURRENT_TIMESTAMP(3), NULL, 'Temperature greater than 100 degF','T');	
+END;
+
+--END CONTRACTION
