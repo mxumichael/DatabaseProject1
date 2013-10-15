@@ -31,6 +31,16 @@ DROP SEQUENCE HEALTHSUPPORTER_seq        ;
 DROP SEQUENCE ALERTS_SEQ                ;
 DROP SEQUENCE PATIENTIDS_seq                ;
 
+DROP TRIGGER oxsat_trigger;
+DROP TRIGGER pain_trigger;
+DROP TRIGGER mood_trigger;
+DROP TRIGGER contraction_trigger;
+DROP TRIGGER temperature_trigger;
+DROP TRIGGER diet_trigger;
+DROP TRIGGER weight_trigger;
+DROP TRIGGER exercise_trigger;
+DROP TRIGGER bp_trigger;
+DROP TRIGGER et_trigger;
 
 
 CREATE SEQUENCE Patientids_seq
@@ -51,7 +61,10 @@ state VARCHAR2(2),
 zip NUMBER(5),
 gender VARCHAR2(1) CHECK (gender in ('M','F','U')),
 publicStatus VARCHAR2(1) CHECK (publicStatus in ('T','F')),
-CONSTRAINT patientKey PRIMARY KEY(patientid)
+username VARCHAR2(10),
+passw VARCHAR2(10),
+CONSTRAINT patientKey PRIMARY KEY(patientid),
+CONSTRAINT patUsernameUnique UNIQUE(username)
 );
 
 CREATE TABLE HealthFriend
@@ -94,9 +107,29 @@ supporterid NUMBER(10),
 fname VARCHAR2(30),
 lname VARCHAR2(30),
 clinic VARCHAR2(30),
-CONSTRAINT healthsupporterKey PRIMARY KEY(supporterid)
+username VARCHAR2(10),
+passw VARCHAR2(10),
+CONSTRAINT healthsupporterKey PRIMARY KEY(supporterid),
+CONSTRAINT SupporterusernameUnique UNIQUE(username)
 );
 
+--Check that this username does not already exist in the HealthSupporter table
+/*
+CREATE OR REPLACE TRIGGER chk_user_hS_trigger
+AFTER INSERT ON Patient
+FOR EACH ROW
+DECLARE 
+  CONDITION_CHECK NUMBER;
+BEGIN
+  SELECT COUNT(*) 
+    INTO CONDITION_CHECK 
+    FROM HealthSupporter H
+   WHERE H.username = :new.username; 
+  IF CONDITION_CHECK >0 THEN
+    RAISE_APPLICATION_ERROR (-20000, 'UPGRADE DENIED!');
+  END IF;
+END;
+*/
 CREATE SEQUENCE Alerts_seq
 START WITH 1
 INCREMENT BY 1
@@ -145,7 +178,7 @@ BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Calorie entry over 1000', 'T');	
 END;
-
+/
 --END DIET
 
 --BEGIN WEIGHT
@@ -175,7 +208,7 @@ BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Weight entry over 200 LBS','T');	
 END;
-
+/
 --END WEIGHT
 
 --BEGIN EXERCISE
@@ -206,8 +239,7 @@ BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Exercise entry over 120 minutes','T');	
 END;
-
-
+/
 --END EXERCISE
 
 --BEGIN BP
@@ -229,15 +261,15 @@ CONSTRAINT fk_bloodpressure_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
 --Create an alert when BP entry has systolic over 120 or diastolic over 100
-CREATE OR REPLACE TRIGGER exercise_trigger
-  AFTER INSERT ON Exercise
+CREATE OR REPLACE TRIGGER bp_trigger
+  AFTER INSERT ON BloodPressure
   FOR EACH ROW
 WHEN (new.systolic > 120 OR new.diastolic > 100)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'Exercise entry over 120 minutes','T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'Blood Pressure 120','T');	
 END;
-
+/
 --END BP
 
 --BEGIN ET
@@ -267,6 +299,7 @@ BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Exercise tolerance under 100 steps','T');	
 END;
+/
 --END ET
 
 --BEGIN OX_SAT
@@ -296,7 +329,7 @@ BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'O2 saturation under 95%','T');	
 END;
-
+/
 --END OX_SAT
 
 --BEGIN PAIN
@@ -326,7 +359,7 @@ BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Pain entry is above 5','T');	
 END;
-
+/
 --END PAIN
 
 --BEGIN MOOD
@@ -356,7 +389,7 @@ BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Mood entry is [S]ad','T');	
 END;
-
+/
 --END MOOD
 
 --BEGIN Contraction
@@ -385,7 +418,7 @@ BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Contractions greater than 5 per hour','T');	
 END;
-
+/
 --END CONTRACTION
 
 CREATE SEQUENCE Temperature_seq
@@ -413,5 +446,7 @@ BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Temperature greater than 100 degF','T');	
 END;
-
+/
 --END CONTRACTION
+
+COMMIT;

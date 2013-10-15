@@ -4,26 +4,26 @@
 
 
 /*PATIENT*/
-INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (1.0, to_date('01/01/1986', 'MM/DD/YYYY'), 'Gary', 'George', '2806 Conifer Drive', 'Raleigh', 'NC', 27606.0, 'M', 'T');
+INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS,USERNAME,PASSW) 
+VALUES (1.0, to_date('01/01/1986', 'MM/DD/YYYY'), 'Gary', 'George', '2806 Conifer Drive', 'Raleigh', 'NC', 27606.0, 'M', 'T', 'g', 'g');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (2.0, to_date('01/02/1986', 'MM/DD/YYYY'), 'Adnan', 'Kazi', '1234 Capability Drive', ' Raleigh', 'NC', 27655.0, 'F', 'T');
+VALUES (2.0, to_date('01/02/1986', 'MM/DD/YYYY'), 'Adnan', 'Kazi', '1234 Capability Drive', ' Raleigh', 'NC', 27655.0, 'F', 'T', 'akazi', 'kazi123');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (3.0, to_date('01/03/1986', 'MM/DD/YYYY'), 'Neha', 'Shetty', '440 Sullivan Drive', ' Chapel Hill', 'NC', 27517.0, 'F', 'T');
+VALUES (3.0, to_date('01/03/1986', 'MM/DD/YYYY'), 'Neha', 'Shetty', '440 Sullivan Drive', ' Chapel Hill', 'NC', 27517.0, 'F', 'T', 'nshetty', 'shetty123');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (4.0, to_date('01/04/1986', 'MM/DD/YYYY'), 'Sheldon', 'Cooper', '2808 Avent Ferry Road', ' Raleigh', 'NC', 27616.0, 'F', 'T');
+VALUES (4.0, to_date('01/04/1986', 'MM/DD/YYYY'), 'Sheldon', 'Cooper', '2808 Avent Ferry Road', ' Raleigh', 'NC', 27616.0, 'F', 'T','scooper','cooper123');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (5.0, to_date('01/05/1986', 'MM/DD/YYYY'), 'Michael', 'Watson', '2222 Gorman Street', ' Raleigh', 'NC', 27678.0, 'M', 'T');
+VALUES (5.0, to_date('01/05/1986', 'MM/DD/YYYY'), 'Michael', 'Watson', '2222 Gorman Street', ' Raleigh', 'NC', 27678.0, 'M', 'T', 'mwatson','watson123');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (6.0, to_date('01/06/1986', 'MM/DD/YYYY'), 'Tom', 'Kerr', '1430 Collegeview Ave', ' Durham', 'NC', 27701.0, 'M', 'T');
+VALUES (6.0, to_date('01/06/1986', 'MM/DD/YYYY'), 'Tom', 'Kerr', '1430 Collegeview Ave', ' Durham', 'NC', 27701.0, 'M', 'T','tkerr','tkerr123');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
-VALUES (7.0, to_date('01/07/1986', 'MM/DD/YYYY'), 'Maya', 'Tran', '100 Brown Circle', ' Chapel Hill', 'NC', 27516.0, 'F', 'T');
+VALUES (7.0, to_date('01/07/1986', 'MM/DD/YYYY'), 'Maya', 'Tran', '100 Brown Circle', ' Chapel Hill', 'NC', 27516.0, 'F', 'T','mtran','tran123');
 
 /*PROBLEMS*/
 SET DEFINE OFF
@@ -66,16 +66,16 @@ VALUES (11.0, 7.0, 'High Risk Pregnancy', to_date('09/30/2013', 'MM/DD/YYYY'), N
 SET DEFINE OFF
 
 INSERT INTO HEALTHSUPPORTER (SUPPORTERID, FNAME, LNAME, CLINIC) 
-VALUES (1.0, 'Altaf', 'Hussain', 'Dayview ');
+VALUES (1.0, 'Altaf', 'Hussain', 'Dayview','ahussain','hussain123');
 
 INSERT INTO HEALTHSUPPORTER (SUPPORTERID, FNAME, LNAME, CLINIC) 
-VALUES (2.0, 'Manu', 'Joseph', 'Dayview ');
+VALUES (2.0, 'Manu', 'Joseph', 'Dayview','mjoseph','joseph123');
 
 INSERT INTO HEALTHSUPPORTER (SUPPORTERID, FNAME, LNAME, CLINIC) 
-VALUES (3.0, 'Shane', 'Lee', 'Huntington ');
+VALUES (3.0, 'Shane', 'Lee', 'Huntington','slee','lee123');
 
 INSERT INTO HEALTHSUPPORTER (SUPPORTERID, FNAME, LNAME, CLINIC) 
-VALUES (4.0, 'Shyam', 'Prasad', 'Huntington ');
+VALUES (4.0, 'Shyam', 'Prasad', 'Huntington','sprasad','prasad123');
 
 /*HEALTH FRIEND*/
 INSERT INTO HEALTHFRIEND (PATIENTID, HEALTHFRIENDID, DTTM, END_DTTM) 
