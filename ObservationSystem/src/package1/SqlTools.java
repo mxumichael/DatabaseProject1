@@ -26,34 +26,34 @@ public class SqlTools {
 	/**
 	 * returns "patient" if the login is a valid patient, "healthsupporter" if the login is a valid health supporter, and null if it is neither.
 	 * @param username
-	 * @param password
+	 * @param passw
 	 * @return
 	 * @throws SQLException 
 	 */
-	public static String LoginValid(String username, String password) throws SQLException {
+	public static String LoginValid(String username, String passw) throws SQLException {
 		// TODO This subroutine takes a username and password and checks if it's valid.
 		Connection conn = makeMyConnection();
 		try{
 			String sql ="select * from PATIENT where username = '"
-					+ username + "' and password = '" + password + "';";
+					+ username + "' and passw = '" + passw + "'";
 			//creating PreparedStatement object to execute query
 			PreparedStatement preStatement = conn.prepareStatement(sql);
 			//executing the query and then committing it before closing in the finally block.
 			ResultSet result = preStatement.executeQuery();		
 			if (!result.isBeforeFirst() ) {    
-				System.out.println("No patients that match this username/password"+username+"/"+password); 
+				System.out.println("No patients that match this username/password"+username+"/"+passw); 
 			} 
 			else {
 				return ("patient");
 			}
 			sql ="select * from HEALTHSUPPORTER where username = '"
-					+ username + "' and password = '" + password + "';";
+					+ username + "' and passw = '" + passw + "';";
 			//creating PreparedStatement object to execute query
 			preStatement = conn.prepareStatement(sql);
 			//executing the query and then committing it before closing in the finally block.
 			result = preStatement.executeQuery();		
 			if (!result.isBeforeFirst() ) {    
-				System.out.println("No patients that match this username/password"+username+"/"+password); 
+				System.out.println("No patients that match this username/password"+username+"/"+passw); 
 			} 
 			else {
 				return ("patient");
@@ -66,7 +66,7 @@ public class SqlTools {
 
 	}
 
-	public static boolean insertDietObservation(String description, String amount,
+	public static int insertDietObservation(String description, String amount,
 			String dateTime, double patientId) throws SQLException {
 		// TODO Auto-generated method stub
 
@@ -79,7 +79,7 @@ public class SqlTools {
 			PreparedStatement preStatement = conn.prepareStatement(sql);
 
 			//executing the query and then committing it before closing in the finally block.
-			boolean result = preStatement.execute();		
+			int result = preStatement.executeUpdate();		
 			conn.commit();
 
 			return result;
