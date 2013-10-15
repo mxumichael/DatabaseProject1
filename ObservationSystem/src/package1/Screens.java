@@ -34,14 +34,21 @@ public class Screens {
 			username = in.readLine();
 			System.out.print("password:");
 			password = in.readLine();
-			Boolean loginValid= false;
+			String loginValid= null;
 			loginValid = SqlTools.LoginValid(username,password);
-			if (loginValid){
-				System.out.println("login Valid!");
+			if (loginValid == null){
+				System.out.println("login/password combination not found.");
+			}
+			else if (loginValid.equals("patient")){
+				patientStartScreen();
+				return("1. Login was Valid");
+			}
+			else if (loginValid.equals("healthsupporter")){
+				healthSupporterStartScreen();
 				return("1. Login was Valid");
 			}
 			else {
-				System.out.println("login Not Valid, please try again.");
+				System.out.println("??? please try again.");
 			}
 		}
 		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
