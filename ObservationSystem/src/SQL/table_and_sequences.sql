@@ -1,4 +1,4 @@
-/* DROP TABLES */
+/** DROP TABLES */
 DROP table PAIN                   ;
 DROP table MOOD                   ;
 DROP table CONTRACTION            ;

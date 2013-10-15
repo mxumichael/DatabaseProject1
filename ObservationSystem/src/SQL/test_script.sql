@@ -1,5 +1,5 @@
 /*
-* Data seed script
+** Data seed script
 */
 
 
