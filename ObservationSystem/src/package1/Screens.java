@@ -9,11 +9,10 @@ public class Screens {
 	static int LOOP_LIMIT = 5;
 	static String LOOP_LIMIT_ERROR= "Looplimitout";
 	BufferedReader in;
-	double patientId= 0;
+	int patientId= 0;
 
 	public static void main(String args[]){
 
-		System.out.println("helloworld");
 		Screens session = new Screens();
 		try {
 			session.StartScreen();
@@ -29,7 +28,8 @@ public class Screens {
 		String username = "";
 		String password = "";
 		for (int x= 0; x< LOOP_LIMIT; x++){
-			System.out.println("  Enter uid followed by password                                                                ");
+			System.out.println("Login Screen                     ");
+			System.out.println("Enter uid followed by password   ");
 			System.out.print("username:");
 			username = in.readLine();
 			System.out.print("password:");
@@ -41,6 +41,7 @@ public class Screens {
 					System.out.println("login/password combination not found.");
 				}
 				else if (loginValid.equals("patient")){
+					this.patientId=Integer.parseInt(SqlTools.QueryMeThis("select patientid from patient where username = '"+username+"'"));
 					patientStartScreen();
 					return("1. Login was Valid");
 				}
@@ -70,10 +71,11 @@ public String StartScreen() throws IOException{
 	this.in = new BufferedReader(new InputStreamReader(System.in)); 
 	try {
 		for (int x= 0; x< LOOP_LIMIT; x++){
-			System.out.println("  1. Login                                                                 ");
-			System.out.println("  2. Create User                                                           ");
-			System.out.println("  3. Exit                                                                  ");
-			System.out.println("  Enter choice                                                             ");
+			System.out.println("Start Screen");
+			System.out.println(" 1. Login                                                                 ");
+			System.out.println(" 2. Create User                                                           ");
+			System.out.println(" 3. Exit                                                                  ");
+			System.out.println("Enter choice                                                             ");
 			//		System.out.println("                                                                           ");
 			userinput = in.readLine();
 			if (userinput.equals("1")){
@@ -96,8 +98,8 @@ private String CreateUserScreen() throws IOException {
 	// TODO Auto-generated method stub extracomments
 	String userinput = "";
 	for (int x= 0; x< LOOP_LIMIT; x++){
-		System.out.println("  Page under Construction                                                                ");
-		System.out.println("  1. Previous Screen                                                                 ");
+		System.out.println("Create User Screen (under construction)                                ");
+		System.out.println(" 1. Previous Screen                               ");
 		userinput = in.readLine();
 		if (userinput.equals("1")){
 			return("1. Previous Screen");
@@ -111,13 +113,14 @@ private String patientStartScreen() throws IOException{
 	String userChoice = "";
 
 	for (int x= 0; x< LOOP_LIMIT; x++){
-		System.out.println("  1. Enter Observations         ");
-		System.out.println("  2. View Observations          ");
-		System.out.println("  3. Add a New Observation Type ");
-		System.out.println("  4. View MyAlerts              ");
-		System.out.println("  5. Manage HealthFriends       ");
-		System.out.println("  6. Back                       ");
-		System.out.println("  Enter choice                  ");
+		System.out.println("Welcome to the patient start screen "+SqlTools.QueryMeThis("select fname from patient where patientid = "+this.patientId));
+		System.out.println(" 1. Enter Observations         ");
+		System.out.println(" 2. View Observations          ");
+		System.out.println(" 3. Add a New Observation Type ");
+		System.out.println(" 4. View MyAlerts              ");
+		System.out.println(" 5. Manage HealthFriends       ");
+		System.out.println(" 6. Back                       ");
+		System.out.println("Enter choice                  ");
 		userChoice = in.readLine();
 		if (userChoice.equals("1")){
 			this.EnterObservations();

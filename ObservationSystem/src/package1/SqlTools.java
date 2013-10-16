@@ -24,6 +24,27 @@ public class SqlTools {
 	}
 
 	/**
+	 * give this subroutine a sql query and it'll get the first result for you as a string.
+	 * @param sql
+	 * @return
+	 */
+	public static String QueryMeThis(String sql){
+		Connection conn;
+		try {
+			conn = makeMyConnection();
+			PreparedStatement preStatement = conn.prepareStatement(sql);
+			ResultSet result = preStatement.executeQuery();		
+			if(result.next()){
+				return result.getString(1);
+			}
+			return null;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/**
 	 * returns "patient" if the login is a valid patient, "healthsupporter" if the login is a valid health supporter, and null if it is neither.
 	 * @param username
 	 * @param passw
@@ -53,10 +74,10 @@ public class SqlTools {
 			//executing the query and then committing it before closing in the finally block.
 			result = preStatement.executeQuery();		
 			if (!result.isBeforeFirst() ) {    
-				System.out.println("No patients that match this username/password"+username+"/"+passw); 
+				System.out.println("No healthsupporters that match this username/password"+username+"/"+passw); 
 			} 
 			else {
-				return ("patient");
+				return ("healthsupporter");
 			}
 			return null;
 		}
