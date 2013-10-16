@@ -15,8 +15,8 @@ public class SqlTools {
 
 		//properties for creating connection to Oracle database
 		Properties props = new Properties();
-		props.setProperty("user", "mxu");
-		props.setProperty("password", "abc123");
+		props.setProperty("user", "jwholme2");
+		props.setProperty("password", "sbct3st!");
 
 		//creating connection to Oracle database using JDBC
 		Connection conn = DriverManager.getConnection(url,props);
@@ -24,39 +24,60 @@ public class SqlTools {
 	}
 
 	/**
+	 * give this subroutine a sql query and it'll get the first result for you as a string.
+	 * @param sql
+	 * @return
+	 */
+	public static String QueryMeThis(String sql){
+		Connection conn;
+		try {
+			conn = makeMyConnection();
+			PreparedStatement preStatement = conn.prepareStatement(sql);
+			ResultSet result = preStatement.executeQuery();		
+			if(result.next()){
+				return result.getString(1);
+			}
+			return null;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/**
 	 * returns "patient" if the login is a valid patient, "healthsupporter" if the login is a valid health supporter, and null if it is neither.
 	 * @param username
-	 * @param password
+	 * @param passw
 	 * @return
 	 * @throws SQLException 
 	 */
-	public static String LoginValid(String username, String password) throws SQLException {
+	public static String LoginValid(String username, String passw) throws SQLException {
 		// TODO This subroutine takes a username and password and checks if it's valid.
 		Connection conn = makeMyConnection();
 		try{
 			String sql ="select * from PATIENT where username = '"
-					+ username + "' and password = '" + password + "';";
+					+ username + "' and passw = '" + passw + "'";
 			//creating PreparedStatement object to execute query
 			PreparedStatement preStatement = conn.prepareStatement(sql);
 			//executing the query and then committing it before closing in the finally block.
 			ResultSet result = preStatement.executeQuery();		
 			if (!result.isBeforeFirst() ) {    
-				System.out.println("No patients that match this username/password"+username+"/"+password); 
+				System.out.println("No patients that match this username/password"+username+"/"+passw); 
 			} 
 			else {
 				return ("patient");
 			}
 			sql ="select * from HEALTHSUPPORTER where username = '"
-					+ username + "' and password = '" + password + "';";
+					+ username + "' and passw = '" + passw + "'";
 			//creating PreparedStatement object to execute query
 			preStatement = conn.prepareStatement(sql);
 			//executing the query and then committing it before closing in the finally block.
 			result = preStatement.executeQuery();		
 			if (!result.isBeforeFirst() ) {    
-				System.out.println("No patients that match this username/password"+username+"/"+password); 
+				System.out.println("No healthsupporters that match this username/password"+username+"/"+passw); 
 			} 
 			else {
-				return ("patient");
+				return ("healthsupporter");
 			}
 			return null;
 		}
@@ -66,7 +87,7 @@ public class SqlTools {
 
 	}
 
-	public static boolean insertDietObservation(String description, String amount,
+	public static int insertDietObservation(String description, String amount,
 			String dateTime, double patientId) throws SQLException {
 		// TODO Auto-generated method stub
 
@@ -79,7 +100,7 @@ public class SqlTools {
 			PreparedStatement preStatement = conn.prepareStatement(sql);
 
 			//executing the query and then committing it before closing in the finally block.
-			boolean result = preStatement.execute();		
+			int result = preStatement.executeUpdate();		
 			conn.commit();
 
 			return result;

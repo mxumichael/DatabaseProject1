@@ -5,7 +5,7 @@
 
 /*PATIENT*/
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS,USERNAME,PASSW) 
-VALUES (1.0, to_date('01/01/1986', 'MM/DD/YYYY'), 'Gary', 'George', '2806 Conifer Drive', 'Raleigh', 'NC', 27606.0, 'M', 'T', 'g', 'g');
+VALUES (1.0, to_date('01/01/1986', 'MM/DD/YYYY'), 'Gary', 'George', '2806 Conifer Drive', 'Raleigh', 'NC', 27606.0, 'M', 'T', 'g', 'g','ggeorge','geo123');
 
 INSERT INTO PATIENT (PATIENTID, DOB, FNAME, LNAME, STREET, CITY, STATE, ZIP, GENDER, PUBLICSTATUS) 
 VALUES (2.0, to_date('01/02/1986', 'MM/DD/YYYY'), 'Adnan', 'Kazi', '1234 Capability Drive', ' Raleigh', 'NC', 27655.0, 'F', 'T', 'akazi', 'kazi123');

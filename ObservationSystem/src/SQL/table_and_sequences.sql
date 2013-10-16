@@ -67,6 +67,23 @@ CONSTRAINT patientKey PRIMARY KEY(patientid),
 CONSTRAINT patUsernameUnique UNIQUE(username)
 );
 
+
+--Check that this Patient username does not already exist in the HealthSupporter table
+CREATE OR REPLACE TRIGGER chk_user_hS_trigger
+AFTER INSERT ON Patient
+FOR EACH ROW
+DECLARE 
+  CONDITION_CHECK NUMBER;
+BEGIN
+  SELECT COUNT(*) 
+    INTO CONDITION_CHECK 
+    FROM HealthSupporter H
+   WHERE H.username = :new.username;
+  IF CONDITION_CHECK >0 THEN
+    RAISE_APPLICATION_ERROR (-20000, 'User already exists');
+  END IF;
+END;
+
 CREATE TABLE HealthFriend
 (
 patientid NUMBER(10),
@@ -110,26 +127,25 @@ clinic VARCHAR2(30),
 username VARCHAR2(10),
 passw VARCHAR2(10),
 CONSTRAINT healthsupporterKey PRIMARY KEY(supporterid),
-CONSTRAINT SupporterusernameUnique UNIQUE(username)
+CONSTRAINT supporterUsernameUnique UNIQUE(username)
 );
 
 --Check that this username does not already exist in the HealthSupporter table
-/*
-CREATE OR REPLACE TRIGGER chk_user_hS_trigger
-AFTER INSERT ON Patient
+CREATE OR REPLACE TRIGGER chk_user_Patient_trigger
+AFTER INSERT ON HealthSupporter
 FOR EACH ROW
 DECLARE 
   CONDITION_CHECK NUMBER;
 BEGIN
   SELECT COUNT(*) 
     INTO CONDITION_CHECK 
-    FROM HealthSupporter H
-   WHERE H.username = :new.username; 
+    FROM Patient P
+   WHERE H.username = :new.username;
   IF CONDITION_CHECK >0 THEN
-    RAISE_APPLICATION_ERROR (-20000, 'UPGRADE DENIED!');
+    RAISE_APPLICATION_ERROR (-20000, 'User already exists');
   END IF;
 END;
-*/
+
 CREATE SEQUENCE Alerts_seq
 START WITH 1
 INCREMENT BY 1
