@@ -38,7 +38,7 @@ public class Screens {
 			try {
 				loginValid = SqlTools.LoginValid(username,password);
 				if (loginValid == null){
-					System.out.println("login/password combination not found.");
+					System.out.println("login/password combination not found. please try again");
 				}
 				else if (loginValid.equals("patient")){
 					this.patientId=Integer.parseInt(SqlTools.QueryMeThis("select patientid from patient where username = '"+username+"'"));
@@ -46,7 +46,6 @@ public class Screens {
 					return("1. Login was Valid");
 				}
 				else if (loginValid.equals("healthsupporter")){
-					this.patientId=Integer.parseInt(SqlTools.QueryMeThis("SELECT supporterid FROM HealthSupporter WHERE username = '"+username+"'"));
 					healthSupporterStartScreen();
 					return("1. Login was Valid");
 				}
@@ -55,53 +54,15 @@ public class Screens {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("??? please try again.");
 		}
 	
 	System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
 	return LOOP_LIMIT_ERROR;
 }
 
-private String healthSupporterStartScreen() throws IOException{
+private void healthSupporterStartScreen() {
 	// TODO Auto-generated method stub
-	String userChoice = "";
 
-	for (int x= 0; x< LOOP_LIMIT; x++){
-		System.out.println("Welcome to the patient start screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
-		System.out.println(" 1. Add Observation Type  ");
-		System.out.println(" 2. Add Association       ");
-		System.out.println(" 3. View Patient          ");
-		System.out.println(" 4. Back                  ");
-		System.out.println("Enter choice              ");
-		userChoice = in.readLine();
-		if (userChoice.equals("1")){
-			this.AddObservationType();
-		} else if (userChoice.equals("2")){
-			this.AddAssociation();
-		} else if (userChoice.equals("3")){
-			this.ViewPatient();
-		} else if (userChoice.equals("4")){
-			return("6. Back");
-		}
-	}
-	System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
-	return LOOP_LIMIT_ERROR;
-
-}
-
-private void ViewPatient() {
-	// TODO Auto-generated method stub
-	
-}
-
-private void AddAssociation() {
-	// TODO Auto-generated method stub
-	
-}
-
-private void AddObservationType() {
-	// TODO Auto-generated method stub
-	
 }
 
 public String StartScreen() throws IOException{
@@ -151,7 +112,7 @@ private String patientStartScreen() throws IOException{
 	String userChoice = "";
 
 	for (int x= 0; x< LOOP_LIMIT; x++){
-		System.out.println("Welcome to the patient start screen "+SqlTools.QueryMeThis("select fname from patient where patientid = "+this.patientId));
+		System.out.println("Welcome to the patient start screen, "+SqlTools.QueryMeThis("select fname from patient where patientid = "+this.patientId));
 		System.out.println(" 1. Enter Observations         ");
 		System.out.println(" 2. View Observations          ");
 		System.out.println(" 3. Add a New Observation Type ");
@@ -230,17 +191,17 @@ private String EnterObservations() throws IOException {
 	return LOOP_LIMIT_ERROR;
 }
 
+private void ExerciseObservation() {
+	// TODO Auto-generated method stub
+	
+}
+
 private void OtherObservation() {
 	// TODO Auto-generated method stub
 
 }
 
 private void MoodObservation() {
-	// TODO Auto-generated method stub
-
-}
-
-private void ExerciseObservation() {
 	// TODO Auto-generated method stub
 
 }
@@ -257,11 +218,11 @@ private String DietObservation() throws IOException {
 	String dateTime = "";
 	for (int x= 0; x< LOOP_LIMIT; x++){
 		System.out.println("  Enter:                                                                ");
-		System.out.print("What food or drink was consumed");
+		System.out.print("What food or drink was consumed:");
 		description = in.readLine();
 		System.out.print("Amount in servings:");
 		amount = in.readLine();
-		System.out.print("Date time of observation (YYYYMMDD HH:MI):");
+		System.out.print("Date time of observation (YYYYMMDD HH:MI AM/PM):");
 		dateTime = in.readLine();
 
 		try {
