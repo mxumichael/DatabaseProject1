@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class SqlTools {
@@ -15,14 +17,37 @@ public class SqlTools {
 
 		//properties for creating connection to Oracle database
 		Properties props = new Properties();
-		props.setProperty("user", "mxu");
-		props.setProperty("password", "abc123");
+		props.setProperty("user", "jwholme2");
+		props.setProperty("password", "sbct3st!");
 
 		//creating connection to Oracle database using JDBC
 		Connection conn = DriverManager.getConnection(url,props);
 		return conn;
 	}
-
+	/**
+	 * give this subroutine a sql query and it'll get the first result for you as a string.
+	 * @param sql
+	 * @return
+	 */
+	public static List<String> QueryMeThisArray(String sql){
+		Connection conn;
+		List<String> stringList = new ArrayList<>();
+		try {
+			conn = makeMyConnection();
+			PreparedStatement preStatement = conn.prepareStatement(sql);
+			ResultSet result = preStatement.executeQuery();		
+			while(result.next()){
+				//Chances are we won't need more than 2 columns
+				stringList.add(result.getString(1)+result.getString(2));
+			}
+			return stringList;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	/**
 	 * give this subroutine a sql query and it'll get the first result for you as a string.
 	 * @param sql
@@ -61,7 +86,7 @@ public class SqlTools {
 			PreparedStatement preStatement = conn.prepareStatement(sql);
 			//executing the query and then committing it before closing in the finally block.
 			ResultSet result = preStatement.executeQuery();		
-			if (!result.isBeforeFirst() ) {    
+			if (!result.next() ) {    
 				System.out.println("No patients that match this username/password combination:"+username+"/"+passw); 
 			} 
 			else {
@@ -73,7 +98,7 @@ public class SqlTools {
 			preStatement = conn.prepareStatement(sql);
 			//executing the query and then committing it before closing in the finally block.
 			result = preStatement.executeQuery();		
-			if (!result.isBeforeFirst() ) {    
+			if (!result.next() ) {    
 				System.out.println("No healthsupporters that match this username/password combination:"+username+"/"+passw); 
 			} 
 			else {
@@ -110,6 +135,30 @@ public class SqlTools {
 		}
 
 	}
+
+	public static int selectObservationTypes(String description, String amount,
+			String dateTime, int patientId) throws SQLException {
+		// TODO Auto-generated method stub
+
+		Connection conn = makeMyConnection();
+		try{
+			String sql ="SELECT type FROM Custom_Observations";
+
+			//creating PreparedStatement object to execute query
+			PreparedStatement preStatement = conn.prepareStatement(sql);
+
+			//executing the query and then committing it before closing in the finally block.
+			int result = preStatement.executeUpdate();		
+			conn.commit();
+
+			return result;
+		}
+		finally {
+			conn.close();
+		}
+
+	}
+
 
 
 }

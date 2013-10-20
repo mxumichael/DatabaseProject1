@@ -11,10 +11,10 @@ DROP table EXERCISETOLERANCE      ;
 DROP table OXSATURATION           ;
 DROP table HEALTHFRIEND           ;
 DROP table PROBLEMS               ;
-DROP table HEALTHSUPPORTER        ;
 DROP table ALERTS                 ;
+DROP TABLE ObservationsMeta       ;
 DROP table PATIENT                ;
-
+DROP table HEALTHSUPPORTER        ;
 /*DROP sequences*/
 DROP SEQUENCE Ox_seq                   ;
 DROP SEQUENCE PAIN_seq                   ;
@@ -28,8 +28,9 @@ DROP SEQUENCE BLOODPRESSURE_seq          ;
 DROP SEQUENCE EXERCISETOLERANCE_seq      ;
 DROP SEQUENCE PROBLEMS_seq               ;
 DROP SEQUENCE HEALTHSUPPORTER_seq        ;
-DROP SEQUENCE ALERTS_SEQ                ;
-DROP SEQUENCE PATIENTIDS_seq                ;
+DROP SEQUENCE ALERTS_SEQ                 ;
+DROP SEQUENCE PATIENTIDS_seq             ;
+DROP SEQUENCE ObservationsMeta_Seq     ;
 
 DROP TRIGGER oxsat_trigger;
 DROP TRIGGER pain_trigger;
@@ -41,7 +42,29 @@ DROP TRIGGER weight_trigger;
 DROP TRIGGER exercise_trigger;
 DROP TRIGGER bp_trigger;
 DROP TRIGGER et_trigger;
+DROP TRIGGER chk_user_hS_trigger;
+DROP TRIGGER chk_user_Patient_trigger;
+DROP TRIGGER is_Patient_in_HS_trigger;
+DROP TRIGGER is_HS_in_Patient_trigger;
 
+
+
+CREATE SEQUENCE HealthSupporter_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
+
+CREATE TABLE HealthSupporter
+(
+supporterid NUMBER(10),
+fname VARCHAR2(30),
+lname VARCHAR2(30),
+clinic VARCHAR2(30),
+username VARCHAR2(10),
+passw VARCHAR2(10),
+CONSTRAINT healthsupporterKey PRIMARY KEY(supporterid),
+CONSTRAINT supporterUsernameUnique UNIQUE(username)
+);
 
 CREATE SEQUENCE Patientids_seq
 START WITH 1
@@ -61,28 +84,13 @@ state VARCHAR2(2),
 zip NUMBER(5),
 gender VARCHAR2(1) CHECK (gender in ('M','F','U')),
 publicStatus VARCHAR2(1) CHECK (publicStatus in ('T','F')),
+supporterid NUMBER(10),
 username VARCHAR2(10),
 passw VARCHAR2(10),
 CONSTRAINT patientKey PRIMARY KEY(patientid),
-CONSTRAINT patUsernameUnique UNIQUE(username)
+CONSTRAINT patUsernameUnique UNIQUE(username),
+CONSTRAINT fk_patient_healthSupporter FOREIGN KEY(supporterid) REFERENCES HealthSupporter
 );
-
-
---Check that this Patient username does not already exist in the HealthSupporter table
-CREATE OR REPLACE TRIGGER chk_user_hS_trigger
-AFTER INSERT ON Patient
-FOR EACH ROW
-DECLARE 
-  CONDITION_CHECK NUMBER;
-BEGIN
-  SELECT COUNT(*) 
-    INTO CONDITION_CHECK 
-    FROM HealthSupporter H
-   WHERE H.username = :new.username;
-  IF CONDITION_CHECK >0 THEN
-    RAISE_APPLICATION_ERROR (-20000, 'User already exists');
-  END IF;
-END;
 
 CREATE TABLE HealthFriend
 (
@@ -113,38 +121,6 @@ CONSTRAINT problemsKey PRIMARY KEY(problemid, patientid),
 CONSTRAINT fk_problems_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
-CREATE SEQUENCE HealthSupporter_seq
-START WITH 1
-INCREMENT BY 1
-CACHE 20;
-
-CREATE TABLE HealthSupporter
-(
-supporterid NUMBER(10),
-fname VARCHAR2(30),
-lname VARCHAR2(30),
-clinic VARCHAR2(30),
-username VARCHAR2(10),
-passw VARCHAR2(10),
-CONSTRAINT healthsupporterKey PRIMARY KEY(supporterid),
-CONSTRAINT supporterUsernameUnique UNIQUE(username)
-);
-
---Check that this username does not already exist in the HealthSupporter table
-CREATE OR REPLACE TRIGGER chk_user_Patient_trigger
-AFTER INSERT ON HealthSupporter
-FOR EACH ROW
-DECLARE 
-  CONDITION_CHECK NUMBER;
-BEGIN
-  SELECT COUNT(*) 
-    INTO CONDITION_CHECK 
-    FROM Patient P
-   WHERE H.username = :new.username;
-  IF CONDITION_CHECK >0 THEN
-    RAISE_APPLICATION_ERROR (-20000, 'User already exists');
-  END IF;
-END;
 
 CREATE SEQUENCE Alerts_seq
 START WITH 1
@@ -157,7 +133,7 @@ alertid NUMBER(10),
 patientid NUMBER(10),
 dttm DATE NOT NULL,
 end_dttm DATE,
-description VARCHAR2(30) NOT NULL,
+description VARCHAR2(50) NOT NULL,
 --T stands for threshhold alert, D stands for disengaged
 type VARCHAR2(1) NOT NULL CHECK (type in ('T','D')),
 CONSTRAINT alertKey PRIMARY KEY(alertid,patientid),
@@ -184,6 +160,8 @@ rec_dttm DATE NOT NULL,
 CONSTRAINT dietKey PRIMARY KEY(dietid,patientid),
 CONSTRAINT fk_diet_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
+
+--Insert row into 
 
 --Create an alert when Diet qty is above 1000 calories
 CREATE OR REPLACE TRIGGER diet_trigger
@@ -464,5 +442,55 @@ BEGIN
 END;
 /
 --END CONTRACTION
+
+CREATE SEQUENCE ObservationsMeta_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
+
+--Table to keep track of all observation types
+CREATE TABLE ObservationsMeta
+(
+obstypeid NUMBER(10),
+obsCategory VARCHAR2(20) NOT NULL CHECK(obsCategory IN ('Behavioral', 'Physiological', 'Psychological')),
+obsType VARCHAR2(20) NOT NULL,
+CONSTRAINT obsMetaKey PRIMARY KEY(obstypeid)
+);
+
+--USERNAME TRIGGERS
+--Check that this Patient username does not already exist in the HealthSupporter table
+CREATE OR REPLACE TRIGGER is_Patient_in_HS_trigger
+AFTER INSERT ON Patient
+FOR EACH ROW
+DECLARE 
+  CONDITION_CHECK NUMBER;
+BEGIN
+  SELECT COUNT(*) 
+    INTO CONDITION_CHECK 
+    FROM HealthSupporter H
+   WHERE H.username = :new.username;
+  IF CONDITION_CHECK >0 THEN
+    RAISE_APPLICATION_ERROR (-20000, 'User already exists');
+  END IF;
+END;
+/
+--Check that this username does not already exist in the HealthSupporter table
+CREATE OR REPLACE TRIGGER is_HS_in_Patient_trigger
+AFTER INSERT ON HealthSupporter
+FOR EACH ROW
+DECLARE 
+  CONDITION_CHECK NUMBER;
+BEGIN
+  SELECT COUNT(*) 
+    INTO CONDITION_CHECK 
+    FROM Patient P
+   WHERE P.username = :new.username;
+  IF CONDITION_CHECK >0 THEN
+    RAISE_APPLICATION_ERROR (-20000, 'User already exists');
+  END IF;
+END;
+/
+
+
 
 COMMIT;

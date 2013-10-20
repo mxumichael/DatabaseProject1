@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Screens {
 	static int LOOP_LIMIT = 5;
@@ -79,7 +80,7 @@ private String healthSupporterStartScreen() throws IOException{
 		} else if (userChoice.equals("2")){
 			this.AddAssociation();
 		} else if (userChoice.equals("3")){
-			this.ViewPatient();
+			this.viewPatientScreen();
 		} else if (userChoice.equals("4")){
 			return("6. Back");
 		}
@@ -89,8 +90,58 @@ private String healthSupporterStartScreen() throws IOException{
 
 }
 
-private void ViewPatient() {
+private String viewPatientScreen() throws IOException {
 	// TODO Auto-generated method stub
+	String userChoice = "";
+
+	for (int x= 0; x< LOOP_LIMIT; x++){
+		System.out.println("Welcome to the patient view screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
+		System.out.println(" 1. View by Observation Type  ");
+		System.out.println(" 2. View by Patient Name       ");
+		System.out.println(" 3. Back                  ");
+		System.out.println("Enter choice              ");
+		userChoice = in.readLine();
+		if (userChoice.equals("1")){
+			this.viewByObservationType();
+		} else if (userChoice.equals("2")){
+			this.viewPatientByName();
+		} else if (userChoice.equals("3")){
+			return("3. Back");
+		}
+	}
+	System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
+	return LOOP_LIMIT_ERROR;
+}
+
+private void viewPatientByName() {
+	// TODO Auto-generated method stub
+	
+}
+
+private String viewByObservationType() throws IOException {
+	String userChoice = "";
+	List<String> stringList = SqlTools.QueryMeThisArray("SELECT obsType FROM ObservationsMeta");
+	List<String> patientList = null;
+	for(String str : stringList) 
+	{
+		int i=1;
+		System.out.println(i + ". " + str);
+		i++;
+		
+	}
+	userChoice = in.readLine();
+	patientList=SqlTools.QueryMeThisArray("SELECT DISTINCT P.lname, P.fname " +
+			                               "FROM " + stringList.get(Integer.parseInt(userChoice)) + " OBS, PATIENT P " +
+					                       "WHERE OBS.PatientID=P.PatientID");
+	int i=1;
+	for(String str : patientList) 
+	{
+		System.out.println(i + ". " + str);
+		i++;
+		
+	}
+	return null;
+	
 	
 }
 
