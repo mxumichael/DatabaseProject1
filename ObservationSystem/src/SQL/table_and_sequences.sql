@@ -12,9 +12,12 @@ DROP table OXSATURATION           ;
 DROP table HEALTHFRIEND           ;
 DROP table PROBLEMS               ;
 DROP table ALERTS                 ;
-DROP TABLE ObservationsMeta       ;
+DROP table CUSTOMOBSERVATIONS        ;
+DROP table CUSTOMOBSERVATIONTYPES        ;
 DROP table PATIENT                ;
 DROP table HEALTHSUPPORTER        ;
+
+
 /*DROP sequences*/
 DROP SEQUENCE Ox_seq                   ;
 DROP SEQUENCE PAIN_seq                   ;
@@ -30,8 +33,10 @@ DROP SEQUENCE PROBLEMS_seq               ;
 DROP SEQUENCE HEALTHSUPPORTER_seq        ;
 DROP SEQUENCE ALERTS_SEQ                 ;
 DROP SEQUENCE PATIENTIDS_seq             ;
-DROP SEQUENCE ObservationsMeta_Seq     ;
+DROP SEQUENCE CustomObservationTypes_Seq     ;
+DROP SEQUENCE CustomObservations_Seq     ;
 
+/*
 DROP TRIGGER oxsat_trigger;
 DROP TRIGGER pain_trigger;
 DROP TRIGGER mood_trigger;
@@ -46,7 +51,7 @@ DROP TRIGGER chk_user_hS_trigger;
 DROP TRIGGER chk_user_Patient_trigger;
 DROP TRIGGER is_Patient_in_HS_trigger;
 DROP TRIGGER is_HS_in_Patient_trigger;
-
+*/
 
 
 CREATE SEQUENCE HealthSupporter_seq
@@ -216,7 +221,7 @@ CREATE TABLE Exercise
 (
 exerciseid NUMBER(10),
 patientid NUMBER(10),
-description VARCHAR2(1024) NOT NULL,
+description VARCHAR2(1024) NOT NULL CHECK(description IN ('walking', 'jogging','cycling')),
 duration NUMBER(10) NOT NULL,
 dttm DATE NOT NULL,
 rec_dttm DATE NOT NULL,
@@ -258,7 +263,7 @@ CONSTRAINT fk_bloodpressure_patientid FOREIGN KEY (patientid) REFERENCES Patient
 CREATE OR REPLACE TRIGGER bp_trigger
   AFTER INSERT ON BloodPressure
   FOR EACH ROW
-WHEN (new.systolic > 120 OR new.diastolic > 100)
+WHEN (new.systolic > 140 OR new.diastolic > 90)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Blood Pressure 120','T');	
@@ -318,7 +323,7 @@ CONSTRAINT fk_ox_patientid FOREIGN KEY (patientid) REFERENCES Patient
 CREATE OR REPLACE TRIGGER oxsat_trigger
   AFTER INSERT ON OxSaturation
   FOR EACH ROW
-WHEN (new.amount < 95)
+WHEN (new.amount < 88)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'O2 saturation under 95%','T');	
@@ -348,7 +353,7 @@ CONSTRAINT fk_pain_patientid FOREIGN KEY (patientid) REFERENCES Patient
 CREATE OR REPLACE TRIGGER pain_trigger
   AFTER INSERT ON Pain
   FOR EACH ROW
-WHEN (new.scale > 5)
+WHEN (new.scale > 7)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Pain entry is above 5','T');	
@@ -367,7 +372,7 @@ CREATE TABLE Mood
 (
 moodid NUMBER(10),
 patientid NUMBER(10),
-mood VARCHAR2(1) NOT NULL,
+mood VARCHAR2(10) NOT NULL CHECK(mood in ('happy', 'sad', 'neutral')),
 dttm DATE NOT NULL,
 rec_dttm DATE NOT NULL,
 CONSTRAINT moodKey PRIMARY KEY(moodid,patientid),
@@ -407,7 +412,7 @@ CONSTRAINT fk_contraction_patientid FOREIGN KEY (patientid) REFERENCES Patient
 CREATE OR REPLACE TRIGGER contraction_trigger
   AFTER INSERT ON Contraction
   FOR EACH ROW
-WHEN (new.frequency >5)
+WHEN (new.frequency >4)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Contractions greater than 5 per hour','T');	
@@ -435,7 +440,7 @@ CONSTRAINT fk_temperature_patientid FOREIGN KEY (patientid) REFERENCES Patient
 CREATE OR REPLACE TRIGGER temperature_trigger
   AFTER INSERT ON Temperature
   FOR EACH ROW
-WHEN (new.temperature >100)
+WHEN (new.temperature >102)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
                               CURRENT_TIMESTAMP(3), NULL, 'Temperature greater than 100 degF','T');	
@@ -443,11 +448,15 @@ END;
 /
 --END CONTRACTION
 
-CREATE SEQUENCE ObservationsMeta_seq
+CREATE SEQUENCE CustomObservationTypes_seq
 START WITH 1
 INCREMENT BY 1
 CACHE 20;
 
+CREATE SEQUENCE CustomObservations_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
 --Deprecating this
 --Table to keep track of all observation types
 /*
@@ -480,7 +489,8 @@ val VARCHAR2(128) NOT NULL,
 dttm DATE NOT NULL,
 rec_dttm DATE NOT NULL,
 CONSTRAINT CustObs_PK PRIMARY KEY(custobsid),
-CONSTRAINT CustOBS_FK FOREIGN KEY(obstypeid) REFERENCES CustomObservationTypes
+CONSTRAINT CustOBS_obstypeid_FK FOREIGN KEY(obstypeid) REFERENCES CustomObservationTypes,
+CONSTRAINT CustOBS_patientid_FK FOREIGN KEY(patientid) REFERENCES Patient
 );
 
 --USERNAME TRIGGERS

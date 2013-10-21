@@ -5,8 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 public class SqlTools {
@@ -25,23 +23,30 @@ public class SqlTools {
 		return conn;
 	}
 	/**
-	 * give this subroutine a sql query and it'll get the first result for you as a string.
+	 * give this subroutine a sql query and it'll get you a 2d array of strings.
+	 * We do this to separate SQL logic from Screens class methods
 	 * @param sql
 	 * @return
 	 */
-	public static ResultSet QueryMeThisArray(String sql){
+	public static ResultSet QueryMeThisArray(String sql) throws SQLException{
 		Connection conn;
+		
+		//We will be storing the data as a table
+		
 		try {
 			conn = makeMyConnection();
 			PreparedStatement preStatement = conn.prepareStatement(sql);
-			ResultSet result = preStatement.executeQuery();		
-			return result;		
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+			ResultSet result = preStatement.executeQuery();
+			//While we have a row of data...
+			return result;
+		}		
+		 catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return null;
+	
+		 }
+
 	}
 	
 	/**

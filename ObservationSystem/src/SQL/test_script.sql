@@ -3,16 +3,9 @@
 */
 
 /*OBSERVATION TYPES*/
-INSERT INTO ObservationsMeta VALUES(ObservationsMeta_Seq.nextval, 'Behavioral','DIET');
-INSERT INTO ObservationsMeta VALUES(ObservationsMeta_Seq.nextval, 'Behavioral','WEIGHT');
-INSERT INTO ObservationsMeta VALUES(ObservationsMeta_Seq.nextval, 'Behavioral','EXERCISE');
-INSERT INTO ObservationsMeta VALUES(ObservationsMeta_Seq.nextval, 'Physiological','BLOODPRESSURE');
-INSERT INTO ObservationsMeta VALUES(ObservationsMeta_Seq.nextval, 'Physiological','EXERCISETOLERANCE');
-INSERT INTO ObservationsMeta VALUES(ObservationsMeta_Seq.nextval, 'Physiological','OXSATURATION');
-INSERT INTO ObservationsMeta VALUES(ObservationsMeta_Seq.nextval, 'Physiological','PAIN');
-INSERT INTO ObservationsMeta VALUES(ObservationsMeta_Seq.nextval, 'Psychological','MOOD');
-INSERT INTO ObservationsMeta VALUES(ObservationsMeta_Seq.nextval, 'Psychological','CONTRATION');
-INSERT INTO ObservationsMeta VALUES(ObservationsMeta_Seq.nextval, 'Psychological','TEMPERATURE');
+INSERT INTO CustomObservationTypes VALUES(1.0, 'Behavioral','Apples');
+INSERT INTO CustomObservationTypes VALUES(2.0, 'Behavioral','Bananas');
+INSERT INTO CustomObservations VALUES(1.0, 1, 1, 'attr1,attr2','val1,val2', CURRENT_TIMESTAMP(3),CURRENT_TIMESTAMP(3));
 
 /*HEALTH SUPPORTERS*/
 SET DEFINE OFF
@@ -138,7 +131,7 @@ VALUES (1.0, 4.0, 20.0, to_date('4/5/2013 11:00 am', 'MM/DD/YYYY HH:MI AM'), to_
 
 /*OBSERVATION - MOOD*/
 INSERT INTO MOOD (MOODID, PATIENTID, MOOD, DTTM, REC_DTTM) 
-VALUES (1.0, 4.0, 'n', to_date('4/5/2013 9:00 pm', 'MM/DD/YYYY HH:MI AM'), to_date('4/5/2013 9:00 pm', 'MM/DD/YYYY HH:MI AM'));
+VALUES (1.0, 4.0, 'neutral', to_date('4/5/2013 9:00 pm', 'MM/DD/YYYY HH:MI AM'), to_date('4/5/2013 9:00 pm', 'MM/DD/YYYY HH:MI AM'));
 
 /*OBSERVATION - OXSATURATION*/
 INSERT INTO OXSATURATION (OXID, PATIENTID, AMOUNT, DTTM, REC_DTTM) 

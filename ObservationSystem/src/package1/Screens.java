@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+
 
 public class Screens {
 	static int LOOP_LIMIT = 5;
@@ -131,9 +131,9 @@ private String viewPatientByName() throws IOException {
 	//Display patient information
 	System.out.println("Demographic information");
 	System.out.println("Firstname Lastname, DOB, Gender, Address");
-	patInfo = SqlTools.QueryMeThisArray("SELECT *"          +
-			                            "FROM PATIENT P "   +
-	                                    "WHERE P.lname ='" + lastName + "' AND P.fname='" + firstName +"'");
+	//patInfo = SqlTools.QueryMeThisArray("SELECT *"          +
+		//	                            "FROM PATIENT P "   +
+	      //                              "WHERE P.lname ='" + lastName + "' AND P.fname='" + firstName +"'");
 
 	/*
 	if (!patInfo.next())
@@ -195,7 +195,29 @@ private String viewPatientByName() throws IOException {
 
 	
 }
+private String viewCustObservations() throws IOException {
+	String userChoice = "";
 
+	for (int x= 0; x< LOOP_LIMIT; x++){
+		System.out.println("Welcome to the View By Custom Observation Type screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
+		System.out.println(" Custom Observations  ");
+		try 
+		{
+			SqlTools.QueryMeThisArray("SELECT * FROM )
+			
+		}
+		
+		
+		
+		System.out.println(" 12. Back                  ");
+		System.out.println("Enter choice              ");
+		userChoice = in.readLine();
+			}
+	System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
+	return LOOP_LIMIT_ERROR;
+
+	
+}
 private String viewByObservationType() throws IOException {
 	String userChoice = "";
 
@@ -216,6 +238,7 @@ private String viewByObservationType() throws IOException {
 		System.out.println(" 10. Mood                  ");
 		System.out.println(" Custom Observations  ");
 		System.out.println(" 11. Custom Types                  ");
+		System.out.println(" 12. Back                  ");
 		System.out.println("Enter choice              ");
 		userChoice = in.readLine();
 		if (userChoice.equals("1"))
@@ -224,43 +247,43 @@ private String viewByObservationType() throws IOException {
 		} 
 		else if (userChoice.equals("2"))
 		{
-			//this.viewWeightObservations();
+			this.viewWeightObservations();
 		} 
 		else if (userChoice.equals("3"))
 		{
-			//this.viewExerciseObservations();
+			this.viewExerciseObservations();
 		} 
 		else if (userChoice.equals("4"))
 		{
-			//this.viewBPObservations();
+			this.viewBPObservations();
 		} 
 		else if (userChoice.equals("5"))
 		{
-			//this.viewETObservations();
+			this.viewETObservations();
 		} 
 		else if (userChoice.equals("6"))
 		{
-			//this.viewO2Observations();
+			this.viewO2Observations();
 		} 
 		else if (userChoice.equals("7"))
 		{
-			//this.viewPainObservations();
+			this.viewPainObservations();
 		} 
 		else if (userChoice.equals("8"))
 		{
-			//this.viewContrObservations();
+			this.viewContrObservations();
 		} 
 		else if (userChoice.equals("9"))
 		{
-			//this.viewTempObservations();
+			this.viewTempObservations();
 		} 
 		else if (userChoice.equals("10"))
 		{
-			//this.viewMoodObservations();
+			this.viewMoodObservations();
 		}
 		else if (userChoice.equals("11"))
 		{
-			//this.viewCustObservations();
+			this.viewCustObservations();
 		} 
 		else if (userChoice.equals("12"))
 		{
@@ -273,26 +296,273 @@ private String viewByObservationType() throws IOException {
 	
 }
 
-private void viewDietObservations() throws SQLException{
-	ResultSet dietObs=SqlTools.QueryMeThisArray("SELECT P.patientid || ',' || P.lname || ',' || P.fname " +
-                                                 "FROM DIET D, PATIENT "            +
-                                                 "WHERE D.patientid=P.patientid");
+private String viewDietObservations() {
+
 	
-	System.out.println("PatientID, Lastname, Firstname");
 	try
 	{
-		while(dietObs.next())
-		{
-			System.out.println(dietObs.getString(1));
+		//Pass the query and get results back
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
+                                                      "FROM DIET D, PATIENT P "            +
+                                                      "WHERE D.patientid=P.patientid");
+		
+		System.out.println("PatientID, Lastname, Firstname");
+		while(results.next())
+		{		
+			System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
+			//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
 		}
-		
 	}
-	catch (SQLException e)
-	{
+	catch(SQLException e)
+	{		
+		// TODO Auto-generated catch block		
 		e.printStackTrace();
-		
+			return null;
 	}
+
+	return null;
+}
+
+private String viewWeightObservations() {
+
 	
+	try
+	{
+		//Pass the query and get results back
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
+                                                      "FROM WEIGHT W, PATIENT P "            +
+                                                      "WHERE W.patientid=P.patientid");
+		
+		System.out.println("PatientID, Lastname, Firstname");
+		while(results.next())
+		{		
+			System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
+			//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
+		}
+	}
+	catch(SQLException e)
+	{		
+		// TODO Auto-generated catch block		
+		e.printStackTrace();
+			return null;
+	}
+
+	return null;
+}
+
+private String viewExerciseObservations() {
+
+	
+	try
+	{
+		//Pass the query and get results back
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
+                                                      "FROM EXERCISE E, PATIENT P "            +
+                                                      "WHERE E.patientid=P.patientid");
+		
+		System.out.println("PatientID, Lastname, Firstname");
+		while(results.next())
+		{		
+			System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
+			//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
+		}
+	}
+	catch(SQLException e)
+	{		
+		// TODO Auto-generated catch block		
+		e.printStackTrace();
+			return null;
+	}
+
+	return null;
+}
+
+private String viewBPObservations() {
+
+	
+	try
+	{
+		//Pass the query and get results back
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
+                                                      "FROM BloodPressure B, PATIENT P "            +
+                                                      "WHERE B.patientid=P.patientid");
+		
+		System.out.println("PatientID, Lastname, Firstname");
+		while(results.next())
+		{		
+			System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
+			//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
+		}
+	}
+	catch(SQLException e)
+	{		
+		// TODO Auto-generated catch block		
+		e.printStackTrace();
+			return null;
+	}
+
+	return null;
+}
+
+private String viewETObservations() {
+
+	
+	try
+	{
+		//Pass the query and get results back
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
+                                                      "FROM ExerciseTolerance ET, PATIENT P "            +
+                                                      "WHERE ET.patientid=P.patientid");
+		
+		System.out.println("PatientID, Lastname, Firstname");
+		while(results.next())
+		{		
+			System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
+			//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
+		}
+	}
+	catch(SQLException e)
+	{		
+		// TODO Auto-generated catch block		
+		e.printStackTrace();
+			return null;
+	}
+
+	return null;
+}
+
+private String viewO2Observations() {
+
+	
+	try
+	{
+		//Pass the query and get results back
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
+                                                      "FROM OxSaturation ET, PATIENT P "            +
+                                                      "WHERE ET.patientid=P.patientid");
+		
+		System.out.println("PatientID, Lastname, Firstname");
+		while(results.next())
+		{		
+			System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
+			//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
+		}
+	}
+	catch(SQLException e)
+	{		
+		// TODO Auto-generated catch block		
+		e.printStackTrace();
+			return null;
+	}
+
+	return null;
+}
+
+private String viewPainObservations() {
+
+	
+	try
+	{
+		//Pass the query and get results back
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
+                                                      "FROM PAIN A, PATIENT P "            +
+                                                      "WHERE A.patientid=P.patientid");
+		
+		System.out.println("PatientID, Lastname, Firstname");
+		while(results.next())
+		{		
+			System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
+			//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
+		}
+	}
+	catch(SQLException e)
+	{		
+		// TODO Auto-generated catch block		
+		e.printStackTrace();
+			return null;
+	}
+
+	return null;
+}
+
+private String viewContrObservations() {
+
+	
+	try
+	{
+		//Pass the query and get results back
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
+                                                      "FROM CONTRACTION C, PATIENT P "            +
+                                                      "WHERE C.patientid=P.patientid");
+		
+		System.out.println("PatientID, Lastname, Firstname");
+		while(results.next())
+		{		
+			System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
+			//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
+		}
+	}
+	catch(SQLException e)
+	{		
+		// TODO Auto-generated catch block		
+		e.printStackTrace();
+			return null;
+	}
+
+	return null;
+}
+private String viewTempObservations() {
+
+	
+	try
+	{
+		//Pass the query and get results back
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
+                                                      "FROM TEMPERATURE T, PATIENT P "            +
+                                                      "WHERE T.patientid=P.patientid");
+		
+		System.out.println("PatientID, Lastname, Firstname");
+		while(results.next())
+		{		
+			System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
+			//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
+		}
+	}
+	catch(SQLException e)
+	{		
+		// TODO Auto-generated catch block		
+		e.printStackTrace();
+			return null;
+	}
+
+	return null;
+}
+
+private String viewMoodObservations() {
+
+	
+	try
+	{
+		//Pass the query and get results back
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
+                                                      "FROM MOOD M, PATIENT P "            +
+                                                      "WHERE M.patientid=P.patientid");
+		
+		System.out.println("PatientID, Lastname, Firstname");
+		while(results.next())
+		{		
+			System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
+			//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
+		}
+	}
+	catch(SQLException e)
+	{		
+		// TODO Auto-generated catch block		
+		e.printStackTrace();
+			return null;
+	}
+
+	return null;
 }
 
 private void AddAssociation() {
