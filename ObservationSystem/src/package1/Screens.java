@@ -3,6 +3,7 @@ package package1;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -113,35 +114,184 @@ private String viewPatientScreen() throws IOException {
 	return LOOP_LIMIT_ERROR;
 }
 
-private void viewPatientByName() {
-	// TODO Auto-generated method stub
+private String viewPatientByName() throws IOException {
+	String lastName,firstName= "";
+	ResultSet patInfo = null;
+	int patientID = 0;
+
+	System.out.println("Welcome to the patient view screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
+	
+	//Read lastname
+	System.out.println(" Enter patient lastname  ");
+	lastName = in.readLine();
+	//Read firstame
+	System.out.println(" Enter patient firstname  ");
+	firstName = in.readLine();
+	
+	//Display patient information
+	System.out.println("Demographic information");
+	System.out.println("Firstname Lastname, DOB, Gender, Address");
+	patInfo = SqlTools.QueryMeThisArray("SELECT *"          +
+			                            "FROM PATIENT P "   +
+	                                    "WHERE P.lname ='" + lastName + "' AND P.fname='" + firstName +"'");
+
+	/*
+	if (!patInfo.next())
+	{
+		//No rows, so no patients
+		System.out.println("Patient does not exist!");
+	}
+	else
+	{
+		do	
+		{
+			System.out.println(patInfo.getString("fname"));
+			
+			//Display observation data
+			System.out.println("Observation information");
+			//Get the observations type
+			ResultSet obsTypes = SqlTools.QueryMeThisArray("SELECT obsType FROM ObservationsMeta");
+			
+			//Loop through each observation table to see if this patient has any
+			while(obsTypes.next())
+			{
+				//Print the observation type
+				System.out.println(obsTypes.getString(1));
+				
+				//Get observation data for this patient
+				//SqlTools.QueryMeThisArray("SELECT obsType FROM " + obsTypes.getString(1)");
+				
+			}
+			
+		} while (patInfo.next());
+		
+	}
+		
+	
+	//Set our counters
+	int ii=0;
+	int iii=0;
+	
+	//Display all observation types
+	for(String str : stringList) 
+	{
+		
+		System.out.println(ii + ". " + str);
+		ii++;
+		
+	}
+	//TODO: Sanitize the input
+	userChoice = in.readLine();
+	
+	////
+	patInfo = SqlTools.QueryMeThis("SELECT fname || ' ' || lname || ',' || DOB || ',' || Gender || ',' ||" +
+                                           "street || ',' || city || ',' || state || ',' || zip "           +
+      "FROM PATIENT P "                                                      +
+      "WHERE P.lname ='" + lastName + "' AND P.fname='" + firstName +"'");
+	
+	
+	*/
+	return null;
+
 	
 }
 
 private String viewByObservationType() throws IOException {
 	String userChoice = "";
-	List<String> stringList = SqlTools.QueryMeThisArray("SELECT obsType FROM ObservationsMeta");
-	List<String> patientList = null;
-	for(String str : stringList) 
-	{
-		int i=1;
-		System.out.println(i + ". " + str);
-		i++;
-		
+
+	for (int x= 0; x< LOOP_LIMIT; x++){
+		System.out.println("Welcome to the View By Observation Type screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
+		System.out.println(" Behavioral  ");
+		System.out.println(" 1. Diet  ");
+		System.out.println(" 2. Weight       ");
+		System.out.println(" 3. Exercise          ");
+		System.out.println(" Physiological  ");
+		System.out.println(" 4. Blood Pressure                  ");
+		System.out.println(" 5. Exercise Tolerance                 ");
+		System.out.println(" 6. O2 Saturation                  ");
+		System.out.println(" 7. Pain                  ");
+		System.out.println(" 8. Contraction                  ");
+		System.out.println(" 9. Temperature                  ");
+		System.out.println(" Psychological  ");
+		System.out.println(" 10. Mood                  ");
+		System.out.println(" Custom Observations  ");
+		System.out.println(" 11. Custom Types                  ");
+		System.out.println("Enter choice              ");
+		userChoice = in.readLine();
+		if (userChoice.equals("1"))
+		{
+			this.viewDietObservations();
+		} 
+		else if (userChoice.equals("2"))
+		{
+			//this.viewWeightObservations();
+		} 
+		else if (userChoice.equals("3"))
+		{
+			//this.viewExerciseObservations();
+		} 
+		else if (userChoice.equals("4"))
+		{
+			//this.viewBPObservations();
+		} 
+		else if (userChoice.equals("5"))
+		{
+			//this.viewETObservations();
+		} 
+		else if (userChoice.equals("6"))
+		{
+			//this.viewO2Observations();
+		} 
+		else if (userChoice.equals("7"))
+		{
+			//this.viewPainObservations();
+		} 
+		else if (userChoice.equals("8"))
+		{
+			//this.viewContrObservations();
+		} 
+		else if (userChoice.equals("9"))
+		{
+			//this.viewTempObservations();
+		} 
+		else if (userChoice.equals("10"))
+		{
+			//this.viewMoodObservations();
+		}
+		else if (userChoice.equals("11"))
+		{
+			//this.viewCustObservations();
+		} 
+		else if (userChoice.equals("12"))
+		{
+			return("12. Back");	
+		}
 	}
-	userChoice = in.readLine();
-	patientList=SqlTools.QueryMeThisArray("SELECT DISTINCT P.lname, P.fname " +
-			                               "FROM " + stringList.get(Integer.parseInt(userChoice)) + " OBS, PATIENT P " +
-					                       "WHERE OBS.PatientID=P.PatientID");
-	int i=1;
-	for(String str : patientList) 
-	{
-		System.out.println(i + ". " + str);
-		i++;
-		
-	}
-	return null;
+	System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
+	return LOOP_LIMIT_ERROR;
+
 	
+}
+
+private void viewDietObservations() throws SQLException{
+	ResultSet dietObs=SqlTools.QueryMeThisArray("SELECT P.patientid || ',' || P.lname || ',' || P.fname " +
+                                                 "FROM DIET D, PATIENT "            +
+                                                 "WHERE D.patientid=P.patientid");
+	
+	System.out.println("PatientID, Lastname, Firstname");
+	try
+	{
+		while(dietObs.next())
+		{
+			System.out.println(dietObs.getString(1));
+		}
+		
+	}
+	catch (SQLException e)
+	{
+		e.printStackTrace();
+		
+	}
 	
 }
 

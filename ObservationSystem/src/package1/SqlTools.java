@@ -29,18 +29,14 @@ public class SqlTools {
 	 * @param sql
 	 * @return
 	 */
-	public static List<String> QueryMeThisArray(String sql){
+	public static ResultSet QueryMeThisArray(String sql){
 		Connection conn;
-		List<String> stringList = new ArrayList<>();
 		try {
 			conn = makeMyConnection();
 			PreparedStatement preStatement = conn.prepareStatement(sql);
 			ResultSet result = preStatement.executeQuery();		
-			while(result.next()){
-				//Chances are we won't need more than 2 columns
-				stringList.add(result.getString(1)+result.getString(2));
-			}
-			return stringList;
+			return result;		
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -448,13 +448,39 @@ START WITH 1
 INCREMENT BY 1
 CACHE 20;
 
+--Deprecating this
 --Table to keep track of all observation types
+/*
 CREATE TABLE ObservationsMeta
 (
 obstypeid NUMBER(10),
 obsCategory VARCHAR2(20) NOT NULL CHECK(obsCategory IN ('Behavioral', 'Physiological', 'Psychological')),
 obsType VARCHAR2(20) NOT NULL,
 CONSTRAINT obsMetaKey PRIMARY KEY(obstypeid)
+);
+*/
+
+CREATE TABLE CustomObservationTypes
+(
+obstypeid NUMBER(10),
+obsCategory VARCHAR2(20) NOT NULL CHECK(obsCategory IN ('Behavioral', 'Physiological', 'Psychological')),
+obsType VARCHAR2(50) NOT NULL UNIQUE,
+CONSTRAINT CustObsType_PK PRIMARY KEY(obstypeid)
+);
+
+--Table to store custom observation data. 
+--attr and val form a comma delimited list with attribute:value
+CREATE TABLE CustomObservations
+(
+custobsid NUMBER(10),
+obstypeid NUMBER(10),
+patientid NUMBER(10),
+attr VARCHAR2(128) NOT NULL,
+val VARCHAR2(128) NOT NULL,
+dttm DATE NOT NULL,
+rec_dttm DATE NOT NULL,
+CONSTRAINT CustObs_PK PRIMARY KEY(custobsid),
+CONSTRAINT CustOBS_FK FOREIGN KEY(obstypeid) REFERENCES CustomObservationTypes
 );
 
 --USERNAME TRIGGERS
