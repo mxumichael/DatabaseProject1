@@ -2,10 +2,6 @@
 ** Data seed script
 */
 
-/*OBSERVATION TYPES*/
-INSERT INTO CustomObservationTypes VALUES(1.0, 'Behavioral','Apples');
-INSERT INTO CustomObservationTypes VALUES(2.0, 'Behavioral','Bananas');
-INSERT INTO CustomObservations VALUES(1.0, 1, 1, 'attr1,attr2','val1,val2', CURRENT_TIMESTAMP(3),CURRENT_TIMESTAMP(3));
 
 /*HEALTH SUPPORTERS*/
 SET DEFINE OFF
@@ -158,7 +154,10 @@ VALUES (WEIGHT_SEQ.nextval, 1.0, 150.0, to_date('4/5/2013 7:50 am', 'MM/DD/YYYY 
 INSERT INTO WEIGHT (WEIGHTID, PATIENTID, QTY, DTTM, REC_DTTM) 
 VALUES (WEIGHT_SEQ.nextval, 1.0, 156.0, to_date('4/6/2013 7:50 am', 'MM/DD/YYYY HH:MI AM'), to_date('4/6/2013 8:00 am', 'MM/DD/YYYY HH:MI AM'));
 
-
+/*OBSERVATION TYPES*/
+INSERT INTO CustomObservationTypes VALUES(1.0, 'Behavioral','Apples');
+INSERT INTO CustomObservationTypes VALUES(2.0, 'Behavioral','Bananas');
+INSERT INTO CustomObservations VALUES(1.0, 1, 1, 'attr1,attr2','val1,val2', CURRENT_TIMESTAMP(3),CURRENT_TIMESTAMP(3));
 
 
 /*
