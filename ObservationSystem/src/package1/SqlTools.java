@@ -15,8 +15,8 @@ public class SqlTools {
 
 		//properties for creating connection to Oracle database
 		Properties props = new Properties();
-		props.setProperty("user", "jwholme2");
-		props.setProperty("password", "sbct3st!");
+		props.setProperty("user", "mxu");
+		props.setProperty("password", "abc123");
 
 		//creating connection to Oracle database using JDBC
 		Connection conn = DriverManager.getConnection(url,props);
@@ -140,7 +140,6 @@ public class SqlTools {
 	public static int selectObservationTypes(String description, String amount,
 			String dateTime, int patientId) throws SQLException {
 		// TODO Auto-generated method stub
-
 		Connection conn = makeMyConnection();
 		try{
 			String sql ="SELECT type FROM Custom_Observations";
@@ -158,6 +157,69 @@ public class SqlTools {
 			conn.close();
 		}
 
+	}
+	public static int insertWeightObservation(String qTY, String dTTM,
+			int patientId) throws SQLException {
+		Connection conn = makeMyConnection();
+		try{
+			String sql ="insert into WEIGHT(WEIGHTID, PATIENTID, QTY, DTTM, REC_DTTM) values (Weight_seq.nextval,'"
+					+ patientId + "','" + qTY + "',to_date('" + dTTM + "','YYYYMMDD HH:MI AM'),sysdate)";
+
+			//creating PreparedStatement object to execute query
+			PreparedStatement preStatement = conn.prepareStatement(sql);
+
+			//executing the query and then committing it before closing in the finally block.
+			int result = preStatement.executeUpdate();		
+			conn.commit();
+
+			return result;
+		}
+		finally {
+			conn.close();
+		}
+
+	}
+	public static int insertExerciseObservation(String dESCRIPTION,
+			String dURATION, String dTTM, int patientId) throws SQLException {
+		Connection conn = makeMyConnection();
+		try{
+			String sql ="insert into EXERCISE(EXERCISEID, PATIENTID, DESCRIPTION, DURATION, DTTM, REC_DTTM) values (EXERCISE_seq.nextval,'"
+					+ patientId + "','" + dESCRIPTION + "','" + dURATION + "',to_date('" + dTTM + "','YYYYMMDD HH:MI AM'),sysdate)";
+
+			//creating PreparedStatement object to execute query
+			PreparedStatement preStatement = conn.prepareStatement(sql);
+
+			//executing the query and then committing it before closing in the finally block.
+			int result = preStatement.executeUpdate();		
+			conn.commit();
+
+			return result;
+		}
+		finally {
+			conn.close();
+		}
+		
+	}
+	public static int insertMoodObservation(String mOOD, String dTTM,
+			int patientId) throws SQLException {
+		Connection conn = makeMyConnection();
+		try{
+			String sql ="insert into MOOD(MOODID, PATIENTID, MOOD, DTTM, REC_DTTM) values (MOOD_seq.nextval,'"
+					+ patientId + "','" + mOOD + "',to_date('" + dTTM + "','YYYYMMDD HH:MI AM'),sysdate)";
+
+			//creating PreparedStatement object to execute query
+			PreparedStatement preStatement = conn.prepareStatement(sql);
+
+			//executing the query and then committing it before closing in the finally block.
+			int result = preStatement.executeUpdate();		
+			conn.commit();
+
+			return result;
+		}
+		finally {
+			conn.close();
+		}
+		
 	}
 
 
