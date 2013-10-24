@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -30,9 +31,9 @@ public class SqlTools {
 	 */
 	public static ResultSet QueryMeThisArray(String sql) throws SQLException{
 		Connection conn;
-		
+
 		//We will be storing the data as a table
-		
+
 		try {
 			conn = makeMyConnection();
 			PreparedStatement preStatement = conn.prepareStatement(sql);
@@ -40,15 +41,15 @@ public class SqlTools {
 			//While we have a row of data...
 			return result;
 		}		
-		 catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-		return null;
-	
-		 }
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+
+		}
 
 	}
-	
+
 	/**
 	 * give this subroutine a sql query and it'll get the first result for you as a string.
 	 * @param sql
@@ -198,7 +199,7 @@ public class SqlTools {
 		finally {
 			conn.close();
 		}
-		
+
 	}
 	public static int insertMoodObservation(String mOOD, String dTTM,
 			int patientId) throws SQLException {
@@ -219,7 +220,38 @@ public class SqlTools {
 		finally {
 			conn.close();
 		}
-		
+
+	}
+
+	/**
+	 *  this subroutine prints out everything in the result set. doesn't matter how many columns the result set has, 
+	 *  doesn't matter how many rows the result set has. prints to system.out
+	 */
+	public static void PrintResultSet(ResultSet observationData) {
+		ResultSetMetaData metaData;
+		try {
+			metaData = observationData.getMetaData();
+			int columnCount = metaData.getColumnCount();
+			for (int index=1;index<=columnCount;index++){
+				System.out.print(metaData.getColumnName(index));
+				if (index!=columnCount){//comma seperator not needed for the last element.
+					System.out.print(",");
+				}
+			}System.out.print("\n");
+			System.out.println("==============================================");
+			while(observationData.next()){
+				for (int index=1;index<=columnCount;index++){
+					System.out.print(observationData.getObject(index).toString());
+					if (index!=columnCount){//comma seperator not needed for the last element.
+						System.out.print(",");
+					}
+				}System.out.print("\n"); //end of the row, carriage return, line feed.
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 

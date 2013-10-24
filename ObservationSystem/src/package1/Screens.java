@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import package1.SqlTools;
 
 
 public class Screens {
@@ -697,9 +698,49 @@ public class Screens {
 
 	}
 
-	private void ViewObservations() {
-		// TODO Auto-generated method stub
+	private String ViewObservations() throws IOException {
+		String userChoice = "";
 
+		menulabel:
+		for (int x= 0; x< LOOP_LIMIT; x++){
+			System.out.println("--View observation type--      ");
+			System.out.println("  1. Diet      ");
+			System.out.println("  2. Weight    ");
+			System.out.println("  3. Exercise  ");
+			System.out.println("  4. Mood      ");
+			System.out.println("  5. Other     ");
+			System.out.println("  6. Back      ");
+			System.out.println("  Enter choice                  ");
+			userChoice = in.readLine();
+			ResultSet observationData=null;
+			try {
+				if (userChoice.equals("1")){
+					observationData =SqlTools.QueryMeThisArray("select * from Diet where patientId ="+this.patientId);
+				} else if (userChoice.equals("2")){
+					observationData =SqlTools.QueryMeThisArray("select * from Weight where patientId ="+this.patientId);
+				} else if (userChoice.equals("3")){
+					observationData =SqlTools.QueryMeThisArray("select * from Exercise where patientId ="+this.patientId);
+				} else if (userChoice.equals("4")){
+					observationData =SqlTools.QueryMeThisArray("select * from Mood where patientId ="+this.patientId);
+				} else if (userChoice.equals("5")){
+					System.out.println("not implemented yet");
+					//observationData =SqlTools.QueryMeThisArray("select * from Other where patientId ="+this.patientId);
+				} else if (userChoice.equals("6")){
+					return("6. Back");
+				} else{
+					System.out.println("invalid choice, please try again.");
+					continue menulabel; //The continue statement skips the current iteration of a for, while , or do-while loop. evaluates the boolean expression that controls the loop.
+				}
+				//time to print all the things in the result set
+				SqlTools.PrintResultSet(observationData);
+			}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
+		return LOOP_LIMIT_ERROR;
 	}
 
 	private String EnterObservations() throws IOException {
