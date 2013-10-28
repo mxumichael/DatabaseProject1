@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import package1.SqlTools;
 
 
@@ -683,9 +684,64 @@ public class Screens {
 		return LOOP_LIMIT_ERROR;
 	}
 
-	private void ManageHealthFriends() {
-		// TODO Auto-generated method stub
+	private String ManageHealthFriends() throws IOException {
+		String userChoice = "";
 
+		for (int x= 0; x< LOOP_LIMIT; x++){
+			System.out.println("--Manage HealthFriends--      ");
+			System.out.println(" 1. View existing HealthFriends ");
+			System.out.println(" 2. Find a New HealthFriend ");
+			System.out.println(" 3. Find a HealthFriend at Risk ");
+			System.out.println(" 4. Back ");
+			System.out.println("  Enter choice                  ");
+			userChoice = in.readLine();
+			ResultSet observationData=null;
+			try {
+				if (userChoice.equals("1")){
+					observationData =SqlTools.QueryMeThisArray("select * from Healthfriend where patientId ="+this.patientId);
+					//time to print all the things in the result set
+					SqlTools.PrintResultSet(observationData);
+					System.out.println("--View Existing HealthFriends--      ");
+					System.out.println(" Enter healthfriendid to view that healthfriend ");
+					System.out.println(" Enter choice");
+					userChoice = in.readLine();
+					//TODO: ideally we'd check to make sure this guy is actually friends with the current user, but for now, we'll just let anyone view anything.
+					this.ViewAHealthfriend(userChoice);
+				} else if (userChoice.equals("2")){
+					this.FindNewHealthfriend();
+				} else if (userChoice.equals("3")){
+					observationData =SqlTools.QueryMeThisArray("select h.healthfriendid,h.dttm,h.end_dttm,count(*) from Healthfriend h inner join alerts a on h.healthfriendid = a.patientid "
+							+ "where h.patientId ="+this.patientId+"group by h.healthfriendid,h.dttm,h.end_dttm having count(*)>=5");
+					if (!observationData.isBeforeFirst()){
+						System.out.println("no HealthFriends are at risk");
+					}
+					else{ //meaning that there are results in the resultset
+						SqlTools.PrintResultSet(observationData);
+					}
+				} else if (userChoice.equals("4")){
+					return("4. Back");
+				} else{
+					System.out.println("invalid choice, please try again.");
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
+		return LOOP_LIMIT_ERROR;
+
+		
+	}
+
+	private void ViewAHealthfriend(String userChoice) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void FindNewHealthfriend() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void ViewMyAlerts() {
@@ -735,7 +791,6 @@ public class Screens {
 				SqlTools.PrintResultSet(observationData);
 			}
 			catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -744,8 +799,6 @@ public class Screens {
 	}
 
 	private String EnterObservations() throws IOException {
-		// TODO Auto-generated method stub
-
 		String userChoice = "";
 
 		for (int x= 0; x< LOOP_LIMIT; x++){
@@ -887,5 +940,10 @@ public class Screens {
 		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
 		return LOOP_LIMIT_ERROR;		
 	}
-
 }
+
+
+
+
+
+
