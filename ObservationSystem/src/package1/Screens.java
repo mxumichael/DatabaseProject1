@@ -4,9 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-
-import package1.SqlTools;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Screens {
@@ -70,27 +71,37 @@ public class Screens {
 		// TODO Auto-generated method stub
 		String userChoice = "";
 
-		for (int x= 0; x< LOOP_LIMIT; x++){
-			System.out.println("Welcome to the patient start screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
-			System.out.println(" 1. Add Observation Type  ");
-			System.out.println(" 2. Add Association       ");
-			System.out.println(" 3. View Patient          ");
-			System.out.println(" 4. Back                  ");
-			System.out.println("Enter choice              ");
-			userChoice = in.readLine();
-			if (userChoice.equals("1")){
-				this.AddObservationType();
-			} else if (userChoice.equals("2")){
-				this.AddAssociation();
-			} else if (userChoice.equals("3")){
-				this.viewPatientScreen();
-			} else if (userChoice.equals("4")){
-				return("6. Back");
+		try
+		{
+			for (int x= 0; x< LOOP_LIMIT; x++){
+				System.out.println("Welcome to the patient start screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
+				System.out.println(" 1. Add a New Observation Type                                   ");
+				System.out.println(" 2. Add an Association Between Observation Type and Illness      ");
+				System.out.println(" 3. View Patients         ");
+				System.out.println(" 4. Back                  ");
+				System.out.println("Enter choice              ");
+				
+				userChoice = in.readLine();
+				
+				if (userChoice.equals("1")){
+					this.AddObservationTypeScreen();
+				} else if (userChoice.equals("2")){
+					this.AddAssociationScreen();
+				} else if (userChoice.equals("3")){
+					this.viewPatientScreen();
+				} else if (userChoice.equals("4")){
+					return("4. Back");
+				}
 			}
+			System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
+			return LOOP_LIMIT_ERROR;
 		}
-		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
-		return LOOP_LIMIT_ERROR;
-
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	
 	}
 
 	private String viewPatientScreen() throws IOException {
@@ -116,144 +127,90 @@ public class Screens {
 		return LOOP_LIMIT_ERROR;
 	}
 
-	private String viewPatientByName() throws IOException {
-		String lastName,firstName= "";
-		ResultSet patInfo = null;
-		int patientID = 0;
-
-		System.out.println("Welcome to the patient view screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
-
-		//Read lastname
-		System.out.println(" Enter patient lastname  ");
-		lastName = in.readLine();
-		//Read firstame
-		System.out.println(" Enter patient firstname  ");
-		firstName = in.readLine();
-
-		//Display patient information
-		System.out.println("Demographic information");
-		System.out.println("Firstname Lastname, DOB, Gender, Address");
-		//patInfo = SqlTools.QueryMeThisArray("SELECT *"          +
-		//	                            "FROM PATIENT P "   +
-		//                              "WHERE P.lname ='" + lastName + "' AND P.fname='" + firstName +"'");
-
-		/*
-	if (!patInfo.next())
-	{
-		//No rows, so no patients
-		System.out.println("Patient does not exist!");
-	}
-	else
-	{
-		do	
-		{
-			System.out.println(patInfo.getString("fname"));
-
-			//Display observation data
-			System.out.println("Observation information");
-			//Get the observations type
-			ResultSet obsTypes = SqlTools.QueryMeThisArray("SELECT obsType FROM ObservationsMeta");
-
-			//Loop through each observation table to see if this patient has any
-			while(obsTypes.next())
-			{
-				//Print the observation type
-				System.out.println(obsTypes.getString(1));
-
-				//Get observation data for this patient
-				//SqlTools.QueryMeThisArray("SELECT obsType FROM " + obsTypes.getString(1)");
-
-			}
-
-		} while (patInfo.next());
-
-	}
-
-
-	//Set our counters
-	int ii=0;
-	int iii=0;
-
-	//Display all observation types
-	for(String str : stringList) 
-	{
-
-		System.out.println(ii + ". " + str);
-		ii++;
-
-	}
-	//TODO: Sanitize the input
-	userChoice = in.readLine();
-
-	////
-	patInfo = SqlTools.QueryMeThis("SELECT fname || ' ' || lname || ',' || DOB || ',' || Gender || ',' ||" +
-                                           "street || ',' || city || ',' || state || ',' || zip "           +
-      "FROM PATIENT P "                                                      +
-      "WHERE P.lname ='" + lastName + "' AND P.fname='" + firstName +"'");
-
-
-		 */
-		return null;
-
-
-	}
-	private String viewCustObservations() throws IOException {
-		String userChoice = "";
-		ResultSet custObsData, custPatData = null;
-
-		for (int x= 0; x< LOOP_LIMIT; x++){
-			System.out.println("Welcome to the View By Custom Observation Type screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
-			System.out.println(" Custom Observations  ");
-			try 
-			{
-				//Grab those custom types!
-				custObsData = SqlTools.QueryMeThisArray("SELECT * " +
-						"FROM CUSTOMOBSERVATIONTYPES");
-
-				//Iterate through the custom types and print them out
-				while (custObsData.next())
-				{		
-					System.out.println(Integer.toString(custObsData.getRow()) + ". " + custObsData.getString(3) );
-				}
-
-				System.out.println("Enter choice              ");
-				System.out.println(" 0. Back                  ");
-
-				userChoice = in.readLine();
-
-				//Now print the patient information
-				custPatData = SqlTools.QueryMeThisArray("SELECT * " +
-						"FROM CUSTOMOBSERVATIONS C, PATIENT P " +
-						"WHERE C.patientid=P.patientid AND OBSTYPEID=" + Integer.parseInt(userChoice));
-
-				return null;
-			}
-			catch(SQLException e)
-			{
-				e.printStackTrace();
-				return null;
-			}
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-				return null;
-			}
-			finally 
-			{
-				in.close();		
-			}
-
-
-
-
-		}
-
-		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
-		return LOOP_LIMIT_ERROR;
-
-
-	}
 	private String viewByObservationType() throws IOException {
+	String userChoice = "";
+
+	
+
+	try
+
+	{
+		
+	
+	for (int x= 0; x< LOOP_LIMIT; x++){
+		System.out.println("Welcome to the View By Observation Type screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
+
+		//Gives us observation types that have patient data
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT * " +
+                                                      "FROM ObservationTypes D");
+		
+		//Print the observation types
+		while(results.next())
+		{
+			System.out.println(results.getRow() + ". " + results.getString("OBSTYPE"));
+			
+		}
+		
+		System.out.println("Enter choice              ");
+		userChoice = in.readLine();
+		
+		//Move the resultSet to the particular row
+		results.absolute(Integer.parseInt(userChoice));
+		
+		//Print all observations for the selected choice
+		ResultSet data = SqlTools.QueryMeThisArray("SELECT * " +
+                                                   "FROM " + results.getString("OBSTYPE") + " T, PATIENT P " +
+                                                   "WHERE T.PATIENTID=P.PATIENTID");
+		
+		//Get metadata
+		ResultSetMetaData dataMD = data.getMetaData();
+		
+		//Print the column names
+		for (int ii=1;ii<dataMD.getColumnCount();ii++)
+		{
+			//Pad right
+			
+			System.out.print(String.format("%-30s", dataMD.getColumnName(ii)) + " ");			
+		}
+	
+		//Put newline for readability
+		System.out.println("");
+		
+		//Print the data
+		while(data.next())
+		{
+			for (int ii=1;ii<dataMD.getColumnCount();ii++)
+			{		
+				
+				
+				System.out.print(String.format("%-30s", data.getString(ii)) + " ");		
+			}
+			System.out.println("");
+			
+		}
+	
+		return null;
+	}
+	System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
+	return LOOP_LIMIT_ERROR;
+
+	}
+catch (SQLException e)
+{
+	e.printStackTrace();
+	return null;
+}
+catch (IOException e)
+{
+	return null;
+}
+
+
+}
+	
+	
+	/*
+		private String viewByObservationType() throws IOException {
 		String userChoice = "";
 
 		for (int x= 0; x< LOOP_LIMIT; x++){
@@ -330,6 +287,7 @@ public class Screens {
 
 
 	}
+	*/
 
 	private String viewDietObservations() {
 
@@ -600,16 +558,7 @@ public class Screens {
 		return null;
 	}
 
-	private void AddAssociation() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void AddObservationType() {
-		// TODO Auto-generated method stub
-
-	}
-
+	
 	public String StartScreen() throws IOException{
 		String userinput = "";
 		this.in = new BufferedReader(new InputStreamReader(System.in)); 
@@ -734,6 +683,7 @@ public class Screens {
 		
 	}
 
+
 	private void ViewAHealthfriend(String userChoice) {
 		// TODO Auto-generated method stub
 		
@@ -799,6 +749,8 @@ public class Screens {
 	}
 
 	private String EnterObservations() throws IOException {
+		// TODO Auto-generated method stub
+
 		String userChoice = "";
 
 		for (int x= 0; x< LOOP_LIMIT; x++){
@@ -940,10 +892,566 @@ public class Screens {
 		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
 		return LOOP_LIMIT_ERROR;		
 	}
+
+	
+	//JWH CHANGES
+	
+	private String AddAssociationScreen() {
+		String obsType, patClass = null;
+		ResultSet custObsData = null;
+		
+		try {
+			
+		
+		System.out.println("Welcome to the Add Association screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
+		
+		
+		//Gives us observation types that have patient data
+		ResultSet results = SqlTools.QueryMeThisArray("SELECT obstype, association " +
+                                                      "FROM ObservationTypes D");
+		
+		//Print the observation types
+		while(results.next())
+		{
+			System.out.println(results.getRow() + ". " + results.getString("OBSTYPE"));
+			
+		}
+		
+		System.out.println("Enter choice              ");
+		obsType = in.readLine();
+		
+		//Move the resultSet to the particular row
+		results.absolute(Integer.parseInt(obsType));
+		
+		System.out.println("Enter association as bitfield (e.g. 1101)             ");
+		patClass = in.readLine();
+		
+		
+		results.updateString("association", patClass);
+		results.updateRow();
+		
+
+		/*		
+		System.out.println(" Choose Observation Type:  ");
+		System.out.println(" Behavioral  ");
+		System.out.println(" 1. Diet  ");
+		System.out.println(" 2. Weight       ");
+		System.out.println(" 3. Exercise          ");
+		System.out.println(" Physiological  ");
+		System.out.println(" 4. Blood Pressure                  ");
+		System.out.println(" 5. Exercise Tolerance                 ");
+		System.out.println(" 6. O2 Saturation                  ");
+		System.out.println(" 7. Pain                  ");
+		System.out.println(" 8. Contraction                  ");
+		System.out.println(" 9. Temperature                  ");
+		System.out.println(" Psychological  ");
+		System.out.println(" 10. Mood                  ");
+		System.out.println(" Custom Observations  ");
+		//Grab those custom types!
+				
+		custObsData = SqlTools.QueryMeThisArray("SELECT * " +
+		                                        "FROM CUSTOMOBSERVATIONTYPES");
+		
+		//Iterate through the custom types and print them out
+
+		while (custObsData.next())
+		{		
+			System.out.println(Integer.toString(10 + custObsData.getRow()) + ". " + custObsData.getString(3) );
+		}
+				
+		System.out.println(" 0. Back                  ");
+		System.out.println("Enter choice              ");
+		
+		
+
+		System.out.println("Enter observation type              ");
+		obsType = in.readLine();
+		
+	
+		System.out.println("You TYPED" + obsType);
+		*
+		*/
+		return null;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private String AddObservationTypeScreen() {
+		// TODO Auto-generated method stub
+
+		String obsType, category,attributes = "";
+		
+		
+		/*
+		for (int x= 0; x< LOOP_LIMIT; x++){
+			System.out.println("Add a New Observation Type Screen                     ");
+			
+			//Type name
+			System.out.println("Enter Observation Type Name: ");
+			obsType = in.readLine();
+			
+			//Category
+			//Make sure input is OK
+			do
+			{
+				System.out.println("Enter Observation Type Category:");
+				System.out.println("1. Behavioral");
+				System.out.println("2. Physiological");
+				System.out.println("3. Psychological");
+				category = in.readLine();
+			
+				
+				switch(category)
+				{
+				
+				
+				case "1":
+					
+					category = "Behavioral"; 
+					break;
+					
+				default: 
+				
+					break;
+					
+				}
+			*/
+/*				
+			}while(Integer.parseInt(category) != 1 || Integer.parseInt(category) != 2 || Integer.parseInt(category) != 3 );
+			
+			do
+			{
+				System.out.println("Enter Observation Type Attribute (enter 0 to stop):");
+				String attribute = in.readLine();
+				
+				//Test if we should break the loop
+				if (Integer.parseInt(attribute) == 0)
+				{
+					break;
+				}
+				else
+				{
+					attributes=attributes + attribute + " VARCHAR2(128) NOT NULL,";
+				}
+				
+			} while(true);
+			
+	*/		
+			/*
+			//First we need to create the sequence
+			String seq = "CREATE SEQUENCE " + obsType + "_seq " +
+		                 "START WITH 1 "                        +
+		                 "INCREMENT BY 1 "                      +
+		                 "CACHE 20";
+			
+			//Next we need to create the table
+			String sql = "CREATE TABLE " + obsType + " " +
+			             "(obstypeid NUMBER(10)," +
+			             " patientid NUMBER(10)," +
+			             attributes +
+			             " dttm DATE NOT NULL," +
+			             " rec_dttm DATE NOT NULL," +
+			             " CONSTRAINT fk_"+obsType+"_patientid FOREIGN KEY (patientid) REFERENCES Patient," +
+			             " CONSTRAINT " +obsType+"_PK PRIMARY KEY (obstypeid)" +
+			             ")";
+			
+			
+			//FInally, we need to update the observations table
+			String updObs = "INSERT INTO OBSERVATIONTYPES " +
+			                "VALUES(OBSERVATIONTYPES_SEQ.nextval " +
+			                "OBSCATEGORY + "
+			                + ""
+			                + "TABLE " + obsType + " " +
+			             "(obstypeid NUMBER(10)," +
+			             " patientid NUMBER(10)," +
+			             attributes +
+			             " dttm DATE NOT NULL," +
+			             " rec_dttm DATE NOT NULL," +
+			             " CONSTRAINT fk_"+obsType+"_patientid FOREIGN KEY (patientid) REFERENCES Patient," +
+			             " CONSTRAINT " +obsType+"_PK PRIMARY KEY (obstypeid)" +
+			             ")";
+			
+			
+			SqlTools.QueryMeThis(sql);
+			*/
+		//}
+			
+			
+		//System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
+		//return LOOP_LIMIT_ERROR;
+		return null;
+		
+	}
+
+	
+	private String viewPatientByName() throws IOException {
+		String lastName,firstName= "";
+		ResultSet patInfo = null;
+		
+
+		System.out.println("Welcome to the patient view screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
+
+		try
+		{
+			//Read lastname
+			System.out.println(" Enter patient lastname  ");
+			lastName = in.readLine();
+			//Read firstame
+			System.out.println(" Enter patient firstname  ");
+			firstName = in.readLine();
+
+			//Display patient information
+			
+			//Go get the results!
+			patInfo = SqlTools.QueryMeThisArray("SELECT *"          +
+				                                "FROM PATIENT P "   +
+			                                    "WHERE P.lname ='" + lastName + "' AND P.fname='" + firstName +"'");
+
+			//If there is a patient
+			if (patInfo.next())
+			{
+				do
+				{
+					System.out.println("Demographic information\n");
+					System.out.println("Firstname Lastname, DOB, Gender, Address");
+					System.out.println(patInfo.getString("fname") + patInfo.getString("lname") + "," + patInfo.getString("DOB")+ patInfo.getString("Gender") + "\n" + patInfo.getString("Street") + "\n");
+					
+					//Store the patient id - we will need it to retrieve the observations
+					int patientID = patInfo.getInt("PatientID");
+
+					//Display observation data
+					System.out.println("Observation information\n");
+					
+					//Get diet observations
+					
+					ResultSet diet = SqlTools.QueryMeThisArray("SELECT description,qty,dttm,rec_dttm " +
+							                                   "FROM DIET D "              +
+							                                   "WHERE D.patientid=" + patientID + " " +
+							                                   "ORDER BY dttm desc");
+
+
+					if(diet.next())
+					{
+						System.out.println("Diet observations\n");
+						
+						System.out.println(String.format("%-20s,%-20s,%-20s,%-20s", "Description", "Servings", "Observation datetime", "Record datetime"));
+						do 
+						{
+							//Print header
+							
+							System.out.println(diet.getString("description") + "," + diet.getString("qty")+
+									diet.getString("dttm") + "," + diet.getString("rec_dttm") + "\n");
+
+						} while(diet.next()); 
+						
+					}
+
+
+
+
+					//Get weight observations
+					
+					ResultSet weight = SqlTools.QueryMeThisArray("SELECT weightid, qty,dttm,rec_dttm "                  +
+							"FROM WEIGHT W "                         +
+							"WHERE W.patientid=" + patientID + " "  +
+							"ORDER BY dttm desc");
+
+					if(weight.next())
+					{
+						System.out.println("Weight observations\n");
+						System.out.println("Qty (lb), Observation datetime, Record datetime");
+						do
+						{
+							//Print header
+
+
+							System.out.println(weight.getString("qty") + "," + 
+									weight.getString("dttm") + "," + weight.getString("rec_dttm") + "\n");
+
+
+						} while (weight.next());
+	
+					}
+					
+					
+					
+					
+					//Get exercise observations
+					
+					ResultSet exercise = SqlTools.QueryMeThisArray("SELECT description,duration,dttm,rec_dttm "  +
+                                                                   "FROM EXERCISE E "                       +
+                                                                   "WHERE E.patientid=" + patientID + " "  +
+                                                                   "ORDER BY dttm desc");
+
+					if(exercise.next())
+					{
+						System.out.println("Exercise observations\n");
+						System.out.println("Description, Duration, Observation datetime, Record datetime");
+						do
+						{
+
+							System.out.println(exercise.getString("description") + "," + exercise.getString("duration") + 
+									           "," + exercise.getString("dttm") + "," + exercise.getString("rec_dttm") + "\n");
+						}while(exercise.next());	
+					}
+					
+					
+					//Get blood pressure observations
+					
+					ResultSet bloodpressure = SqlTools.QueryMeThisArray("SELECT systolic,diastolic,dttm, rec_dttm "            +
+                                                                        "FROM BLOODPRESSURE BP "                 +
+                                                                        "WHERE BP.patientid=" + patientID + " "  +
+                                                                        "ORDER BY dttm desc");
+
+					if(bloodpressure.next())
+					{
+
+						System.out.println("Blood pressure observations\n");
+						System.out.println("Systolic (mgHg), Diastolic (mgHg), Observation datetime, Record datetime");
+						do
+						{
+							System.out.println(bloodpressure.getString("systolic") + "," + bloodpressure.getString("diastolic") + 
+									           "," + bloodpressure.getString("dttm") + "," + bloodpressure.getString("rec_dttm") + "\n");
+						}while(bloodpressure.next());
+							
+					}
+					
+					//Get Exercise Tolerance observations
+					
+					ResultSet extol = SqlTools.QueryMeThisArray("SELECT steps, dttm, rec_dttm "                            +
+                                                                "FROM EXERCISETOLERANCE ET "                 +
+                                                                "WHERE ET.patientid=" + patientID + " "  +
+                                                                "ORDER BY dttm desc");
+
+					if(extol.next())
+					{
+
+						System.out.println("Exercise tolerance observations\n");
+						System.out.println("Steps, Observation datetime, Record datetime");
+						do
+						{
+							System.out.println(extol.getString("steps") +  
+									           "," + extol.getString("dttm") + "," + extol.getString("rec_dttm") + "\n");
+						}while(extol.next());
+						
+						
+					}
+					
+					
+					ResultSet oxsat = SqlTools.QueryMeThisArray("SELECT amount, dttm, rec_dttm "                            +
+                                                                "FROM OXSATURATION OX "                 +
+                                                                "WHERE OX.patientid=" + patientID + " "  +
+                                                                "ORDER BY dttm desc");
+					
+
+					if(oxsat.next())
+					{
+						System.out.println("Oxygen saturation observations\n");
+						System.out.println("Amount, Observation datetime, Record datetime");
+						//Get o2 sat observations
+						do
+						{
+
+							System.out.println(oxsat.getString("amount") +  
+									           "," + oxsat.getString("dttm") + "," + oxsat.getString("rec_dttm") + "\n");
+						} while(oxsat.next());
+							
+					}
+					
+					//Get Custom Observations list
+					//Only get observation IDs above 10 (custom observations)
+					
+					ResultSet cust = SqlTools.QueryMeThisArray("SELECT OBSTYPE "                         +
+                                                                "FROM OBSERVATIONTYPES " +
+							                                    "WHERE obstypeid > 10");
+                                                                
+
+					while(cust.next())
+					{
+						System.out.println("Custom observations\n");
+						//Print the observation name
+						System.out.println(cust.getString("OBSTYPE"));
+						
+						//Print all observations entries for the type
+						ResultSet data = SqlTools.QueryMeThisArray("SELECT * " +
+				                                                   "FROM " + cust.getString("OBSTYPE") + " T, PATIENT P " +
+				                                                   "WHERE T.PATIENTID=P.PATIENTID AND P.PATIENTID=" + patientID + " " +
+				                                                   "ORDER BY dttm DESC");
+						
+						//Get metadata
+						ResultSetMetaData dataMD = data.getMetaData();
+						
+						//Print the column names
+						for (int ii=1;ii<dataMD.getColumnCount();ii++)
+						{
+							//Pad right
+							System.out.print(String.format("%-30s", dataMD.getColumnName(ii)) + " ");			
+						}
+					
+						//Put newline for readability
+						System.out.println("");
+						
+						//Print the data
+						while(data.next())
+						{
+							for (int ii=1;ii<dataMD.getColumnCount();ii++)
+							{		
+								System.out.print(String.format("%-30s", data.getString(ii)) + " ");		
+							}
+							System.out.println("");
+							
+						}
+
+						
+						
+
+					}
+					
+				
+				} while (patInfo.next());
+			}
+			else
+			{
+				System.out.println("Patient does not exist!");
+				return null;
+			}
+			return null;
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+			return null;			
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+			
+
+	}
+
+
+	private String viewCustObservations() throws IOException {
+		String userChoice = "";
+		ResultSet custObsData, custPatData = null;
+
+		for (int x= 0; x< LOOP_LIMIT; x++){
+			System.out.println("Welcome to the View By Custom Observation Type screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
+			System.out.println(" Custom Observations  ");
+			try 
+			{
+				//Grab those custom types!
+				custObsData = SqlTools.QueryMeThisArray("SELECT * " +
+						"FROM CUSTOMOBSERVATIONTYPES");
+
+				//Iterate through the custom types and print them out
+				while (custObsData.next())
+				{		
+					System.out.println(Integer.toString(custObsData.getRow()) + ". " + custObsData.getString(3) );
+				}
+
+				System.out.println("Enter choice              ");
+				System.out.println(" 0. Back                  ");
+
+				userChoice = in.readLine();
+
+				//Now print the patient information
+				custPatData = SqlTools.QueryMeThisArray("SELECT * " +
+						"FROM CUSTOMOBSERVATIONS C, PATIENT P " +
+						"WHERE C.patientid=P.patientid AND OBSTYPEID=" + Integer.parseInt(userChoice));
+
+				System.out.println("PatientID,Lastname,Firstname");
+				while (custPatData.next())
+				{
+					System.out.println(custPatData.getString("PATIENTID") + "," + custPatData.getString("fname")  + "," + custPatData.getString("lname"));
+				}
+				return null;
+			}
+			catch(SQLException e)
+			{
+				e.printStackTrace();
+				return null;
+			}
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+				return null;
+			}
+			
+		}
+
+		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
+		return LOOP_LIMIT_ERROR;
+
+
+	}	
+/*	
+	private String viewCustObservations() throws IOException {
+		String userChoice = "";
+		ResultSet custObsData, custPatData = null;
+
+		for (int x= 0; x< LOOP_LIMIT; x++){
+			System.out.println("Welcome to the View By Custom Observation Type screen "+SqlTools.QueryMeThis("SELECT fname FROM HealthSupporter where supporterid = "+this.patientId));
+			System.out.println(" Custom Observations  ");
+			try 
+			{
+				//Grab those custom types!
+				custObsData = SqlTools.QueryMeThisArray("SELECT * " +
+						"FROM CUSTOMOBSERVATIONTYPES");
+
+				//Iterate through the custom types and print them out
+				while (custObsData.next())
+				{		
+					System.out.println(Integer.toString(custObsData.getRow()) + ". " + custObsData.getString(3) );
+				}
+
+				System.out.println("Enter choice              ");
+				System.out.println(" 0. Back                  ");
+
+				userChoice = in.readLine();
+
+				//Now print the patient information
+				custPatData = SqlTools.QueryMeThisArray("SELECT * " +
+						"FROM CUSTOMOBSERVATIONS C, PATIENT P " +
+						"WHERE C.patientid=P.patientid AND OBSTYPEID=" + Integer.parseInt(userChoice));
+
+				System.out.println("PatientID,Lastname,Firstname");
+				while (custPatData.next())
+				{
+					System.out.println(custPatData.getString("PATIENTID") + "," + custPatData.getString("fname")  + "," + custPatData.getString("lname"));
+				}
+				return null;
+			}
+			catch(SQLException e)
+			{
+				e.printStackTrace();
+				return null;
+			}
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+				return null;
+			}
+			
+		}
+
+		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
+		return LOOP_LIMIT_ERROR;
+
+
+	}	
+	*/
 }
-
-
-
-
-
 
