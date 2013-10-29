@@ -155,11 +155,26 @@ INSERT INTO WEIGHT (WEIGHTID, PATIENTID, QTY, DTTM, REC_DTTM)
 VALUES (WEIGHT_SEQ.nextval, 1.0, 156.0, to_date('4/6/2013 7:50 am', 'MM/DD/YYYY HH:MI AM'), to_date('4/6/2013 8:00 am', 'MM/DD/YYYY HH:MI AM'));
 
 /*OBSERVATION TYPES*/
-INSERT INTO CustomObservationTypes VALUES(1.0, 'Behavioral','Apples');
-INSERT INTO CustomObservationTypes VALUES(2.0, 'Behavioral','Bananas');
-INSERT INTO CustomObservations VALUES(1.0, 1, 1, 'attr1,attr2','val1,val2', CURRENT_TIMESTAMP(3),CURRENT_TIMESTAMP(3));
+/*Last column is a bit field for illness associationL HIV,COPD,High risk pregnancy,obesity'*/
+INSERT INTO ObservationTypes VALUES(1.0, 'Behavioral','Diet','1111');
+INSERT INTO ObservationTypes VALUES(2.0, 'Behavioral','Weight','1111');
+INSERT INTO ObservationTypes VALUES(3.0, 'Behavioral','Exercise','1111');
+INSERT INTO ObservationTypes VALUES(4.0, 'Physiological','BloodPressure','0011');
+INSERT INTO ObservationTypes VALUES(5.0, 'Physiological','ExerciseTolerance','1000');
+INSERT INTO ObservationTypes VALUES(6.0, 'Physiological','OxSaturation','1000');
+INSERT INTO ObservationTypes VALUES(7.0, 'Physiological','Pain','0010');
+INSERT INTO ObservationTypes VALUES(8.0, 'Psychological','Mood','1111');
+INSERT INTO ObservationTypes VALUES(9.0, 'Physiological','Contraction','0010');
+INSERT INTO ObservationTypes VALUES(10.0, 'Physiological','Temperature','1000');
 
 
+/*CUSTOM OBSERVATIONS*/
+INSERT INTO ObservationTypes VALUES(11.0, 'Physiological','Apples','1000');
+INSERT INTO ObservationTypes VALUES(12.0, 'Physiological','Bananas','1000');
+
+/*APPLES DATA*/
+INSERT INTO APPLES VALUES(1, 4, 'red', CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3));
+select * from apples
 /*
 /*Create two patients*/
 /*INSERT INTO Patient VALUES (Patientids_seq.nextval, '02-Nov-92', 'John', 'Holmes', '123 Main Street', 'Ann Arbor', 'MI', 48105, 'M', 'T')*/

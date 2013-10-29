@@ -1,3 +1,4 @@
+
 /** DROP TABLES */
 DROP table PAIN                   ;
 DROP table MOOD                   ;
@@ -14,8 +15,10 @@ DROP table PROBLEMS               ;
 DROP table ALERTS                 ;
 DROP table CUSTOMOBSERVATIONS        ;
 DROP table CUSTOMOBSERVATIONTYPES        ;
+drop table apples ;
 DROP table PATIENT                ;
 DROP table HEALTHSUPPORTER        ;
+Drop table ObservationTypes       ;
 
 
 /*DROP sequences*/
@@ -35,7 +38,8 @@ DROP SEQUENCE ALERTS_SEQ                 ;
 DROP SEQUENCE PATIENTIDS_seq             ;
 DROP SEQUENCE CustomObservationTypes_Seq     ;
 DROP SEQUENCE CustomObservations_Seq     ;
-
+drop sequence ObservationTypes_seq ; 
+drop sequence Apples_seq;
 /*
 DROP TRIGGER oxsat_trigger;
 DROP TRIGGER pain_trigger;
@@ -141,6 +145,8 @@ end_dttm DATE,
 description VARCHAR2(50) NOT NULL,
 --T stands for threshhold alert, D stands for disengaged
 type VARCHAR2(1) NOT NULL CHECK (type in ('T','D')),
+--Y stands for yes, has been viewed. N stands for no, has not been viewed.
+viewed varchar2(1) not null check (viewed in ('Y','N')),
 CONSTRAINT alertKey PRIMARY KEY(alertid,patientid),
 CONSTRAINT fk_alerts_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
@@ -168,17 +174,15 @@ CONSTRAINT fk_diet_patientid FOREIGN KEY (patientid) REFERENCES Patient
 
 --Insert row into 
 
---Create an alert when Diet qty is above 1000 calories
 CREATE OR REPLACE TRIGGER diet_trigger
   AFTER INSERT ON DIET
   FOR EACH ROW
 WHEN (new.qty > 1000)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'Calorie entry over 1000', 'T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'Calorie entry over 1000', 'T', 'N');	
 END;
 /
---END DIET
 
 --BEGIN WEIGHT
 
@@ -205,7 +209,7 @@ CREATE OR REPLACE TRIGGER weight_trigger
 WHEN (new.qty > 200)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'Weight entry over 200 LBS','T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'Weight entry over 200 LBS','T', 'N');	
 END;
 /
 --END WEIGHT
@@ -236,7 +240,7 @@ CREATE OR REPLACE TRIGGER exercise_trigger
 WHEN (new.duration > 120)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'Exercise entry over 120 minutes','T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'Exercise entry over 120 minutes','T', 'N');	
 END;
 /
 --END EXERCISE
@@ -266,7 +270,7 @@ CREATE OR REPLACE TRIGGER bp_trigger
 WHEN (new.systolic > 140 OR new.diastolic > 90)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'Blood Pressure 120','T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'Blood Pressure 120','T', 'N');		
 END;
 /
 --END BP
@@ -296,7 +300,7 @@ CREATE OR REPLACE TRIGGER et_trigger
 WHEN (new.steps < 100)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'Exercise tolerance under 100 steps','T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'Exercise tolerance under 100 steps','T', 'N');	
 END;
 /
 --END ET
@@ -326,7 +330,7 @@ CREATE OR REPLACE TRIGGER oxsat_trigger
 WHEN (new.amount < 88)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'O2 saturation under 95%','T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'O2 saturation under 95%','T', 'N');		
 END;
 /
 --END OX_SAT
@@ -356,7 +360,7 @@ CREATE OR REPLACE TRIGGER pain_trigger
 WHEN (new.scale > 7)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'Pain entry is above 5','T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'Pain entry is above 5','T', 'N');		
 END;
 /
 --END PAIN
@@ -386,7 +390,7 @@ CREATE OR REPLACE TRIGGER mood_trigger
 WHEN (new.mood ='S')
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'Mood entry is [S]ad','T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'Mood entry is [S]ad','T', 'N');		
 END;
 /
 --END MOOD
@@ -415,7 +419,7 @@ CREATE OR REPLACE TRIGGER contraction_trigger
 WHEN (new.frequency >4)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'Contractions greater than 5 per hour','T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'Contractions greater than 5 per hour','T', 'N');		
 END;
 /
 --END CONTRACTION
@@ -443,20 +447,23 @@ CREATE OR REPLACE TRIGGER temperature_trigger
 WHEN (new.temperature >102)
 BEGIN
     INSERT INTO ALERTS VALUES(ALERTS_SEQ.nextval, :new.PATIENTID, 
-                              CURRENT_TIMESTAMP(3), NULL, 'Temperature greater than 100 degF','T');	
+                              CURRENT_TIMESTAMP(3), NULL, 'Temperature greater than 100 degF','T', 'N');		
 END;
 /
 --END CONTRACTION
 
-CREATE SEQUENCE CustomObservationTypes_seq
+CREATE SEQUENCE ObservationTypes_seq
 START WITH 1
 INCREMENT BY 1
 CACHE 20;
 
+/*
 CREATE SEQUENCE CustomObservations_seq
 START WITH 1
 INCREMENT BY 1
 CACHE 20;
+*/
+
 --Deprecating this
 --Table to keep track of all observation types
 /*
@@ -469,14 +476,35 @@ CONSTRAINT obsMetaKey PRIMARY KEY(obstypeid)
 );
 */
 
-CREATE TABLE CustomObservationTypes
+--[H]IV, [C]OPD, High Risk [P]regnancy, [O]besity
+CREATE TABLE ObservationTypes
 (
 obstypeid NUMBER(10),
 obsCategory VARCHAR2(20) NOT NULL CHECK(obsCategory IN ('Behavioral', 'Physiological', 'Psychological')),
 obsType VARCHAR2(50) NOT NULL UNIQUE,
+association CHAR(4) NOT NULL,
 CONSTRAINT CustObsType_PK PRIMARY KEY(obstypeid)
 );
 
+
+/*CUSTOM OBSERVATION: APPLES*/
+CREATE SEQUENCE Apples_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
+
+CREATE TABLE Apples
+(
+obstypeid NUMBER(10),
+patientid NUMBER(10),
+color VARCHAR2(128) NOT NULL,
+dttm DATE NOT NULL,
+rec_dttm DATE NOT NULL,
+CONSTRAINT fk_apples_patientid FOREIGN KEY (patientid) REFERENCES Patient,
+CONSTRAINT Apples_PK PRIMARY KEY(obstypeid)
+);
+
+/*
 --Table to store custom observation data. 
 --attr and val form a comma delimited list with attribute:value
 CREATE TABLE CustomObservations
@@ -484,7 +512,6 @@ CREATE TABLE CustomObservations
 custobsid NUMBER(10),
 obstypeid NUMBER(10),
 patientid NUMBER(10),
-attr VARCHAR2(128) NOT NULL,
 val VARCHAR2(128) NOT NULL,
 dttm DATE NOT NULL,
 rec_dttm DATE NOT NULL,
@@ -492,6 +519,7 @@ CONSTRAINT CustObs_PK PRIMARY KEY(custobsid),
 CONSTRAINT CustOBS_obstypeid_FK FOREIGN KEY(obstypeid) REFERENCES CustomObservationTypes,
 CONSTRAINT CustOBS_patientid_FK FOREIGN KEY(patientid) REFERENCES Patient
 );
+*/
 
 --USERNAME TRIGGERS
 --Check that this Patient username does not already exist in the HealthSupporter table
