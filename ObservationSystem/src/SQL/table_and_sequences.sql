@@ -15,6 +15,7 @@ DROP table PROBLEMS               ;
 DROP table ALERTS                 ;
 DROP table CUSTOMOBSERVATIONS        ;
 DROP table CUSTOMOBSERVATIONTYPES        ;
+drop table MESSAGES               ; 
 drop table apples ;
 DROP table PATIENT                ;
 DROP table HEALTHSUPPORTER        ;
@@ -35,6 +36,7 @@ DROP SEQUENCE EXERCISETOLERANCE_seq      ;
 DROP SEQUENCE PROBLEMS_seq               ;
 DROP SEQUENCE HEALTHSUPPORTER_seq        ;
 DROP SEQUENCE ALERTS_SEQ                 ;
+Drop Sequence MESSAGES_SEQ
 DROP SEQUENCE PATIENTIDS_seq             ;
 DROP SEQUENCE CustomObservationTypes_Seq     ;
 DROP SEQUENCE CustomObservations_Seq     ;
@@ -149,6 +151,24 @@ type VARCHAR2(1) NOT NULL CHECK (type in ('T','D')),
 viewed varchar2(1) not null check (viewed in ('Y','N')),
 CONSTRAINT alertKey PRIMARY KEY(alertid,patientid),
 CONSTRAINT fk_alerts_patientid FOREIGN KEY (patientid) REFERENCES Patient
+);
+
+CREATE SEQUENCE Messages_seq
+START WITH 1
+INCREMENT BY 1
+CACHE 20;
+
+CREATE TABLE Messages
+(
+Messageid NUMBER(10),
+patientid NUMBER(10),
+senderid NUMBER(10),
+dttm DATE NOT NULL,
+description VARCHAR2(1080),
+--Y stands for yes, has been viewed. N stands for no, has not been viewed.
+viewed varchar2(1) not null check (viewed in ('Y','N')),
+CONSTRAINT messageKey PRIMARY KEY(Messageid),
+CONSTRAINT fk_messages_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
 
 --OBSERVATIONS

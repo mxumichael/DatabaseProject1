@@ -174,7 +174,27 @@ INSERT INTO ObservationTypes VALUES(12.0, 'Physiological','Bananas','1000');
 
 /*APPLES DATA*/
 INSERT INTO APPLES VALUES(1, 4, 'red', CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3));
-select * from apples
+
+insert into messages values (messages_seq.nextval,4,1,sysdate,'hi there healthfriend. hope you are doing well','N');
+insert into messages values (messages_seq.nextval,4,2,sysdate,'Happy Birthday!','N');
+insert into messages values (messages_seq.nextval,4,3,sysdate,'Sheldon, remember to call your mother on your birthday.','N');
+
+/*test alert for patient that is at risk. at risk = Display a list of existing HealthFriends who are at risk, 
+i.e. who have more than five unviewed alerts and initiate an option to send message* to healthfriends who are at risk.*/
+INSERT INTO PAIN (PAINID, PATIENTID, SCALE, DTTM, REC_DTTM) 
+VALUES (pain_seq.nextval, 1, 8.0, to_date('4/6/2013 1:00 pm', 'MM/DD/YYYY HH:MI AM'), sysdate);
+INSERT INTO PAIN (PAINID, PATIENTID, SCALE, DTTM, REC_DTTM) 
+VALUES (pain_seq.nextval, 1, 7.0, to_date('4/6/2013 2:00 pm', 'MM/DD/YYYY HH:MI AM'), sysdate);
+INSERT INTO PAIN (PAINID, PATIENTID, SCALE, DTTM, REC_DTTM) 
+VALUES (pain_seq.nextval, 1, 8.0, to_date('4/6/2013 3:00 pm', 'MM/DD/YYYY HH:MI AM'), sysdate);
+INSERT INTO PAIN (PAINID, PATIENTID, SCALE, DTTM, REC_DTTM) 
+VALUES (pain_seq.nextval, 1, 8.0, to_date('4/6/2013 4:00 pm', 'MM/DD/YYYY HH:MI AM'), sysdate);
+INSERT INTO PAIN (PAINID, PATIENTID, SCALE, DTTM, REC_DTTM) 
+VALUES (pain_seq.nextval, 1, 7.0, to_date('4/6/2013 5:00 pm', 'MM/DD/YYYY HH:MI AM'), sysdate);
+INSERT INTO PAIN (PAINID, PATIENTID, SCALE, DTTM, REC_DTTM) 
+VALUES (pain_seq.nextval, 1, 8.0, to_date('4/6/2013 6:00 pm', 'MM/DD/YYYY HH:MI AM'), sysdate);
+
+
 /*
 /*Create two patients*/
 /*INSERT INTO Patient VALUES (Patientids_seq.nextval, '02-Nov-92', 'John', 'Holmes', '123 Main Street', 'Ann Arbor', 'MI', 48105, 'M', 'T')*/

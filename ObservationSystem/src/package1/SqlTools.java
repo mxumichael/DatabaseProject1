@@ -16,8 +16,8 @@ public class SqlTools {
 
 		//properties for creating connection to Oracle database
 		Properties props = new Properties();
-		props.setProperty("user", "jwholme2");
-		props.setProperty("password", "sbct3st!");
+		props.setProperty("user", "mxu");
+		props.setProperty("password", "abc123");
 
 		//creating connection to Oracle database using JDBC
 		Connection conn = DriverManager.getConnection(url,props);
@@ -31,9 +31,9 @@ public class SqlTools {
 	 */
 	public static ResultSet QueryMeThisArray(String sql) throws SQLException{
 		Connection conn;
-		
+
 		//We will be storing the data as a table
-		
+
 		try {
 			conn = makeMyConnection();
 			//JWH UPDATE 10/27
@@ -42,15 +42,15 @@ public class SqlTools {
 			//While we have a row of data...
 			return result;
 		}		
-		 catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-		return null;
-	
-		 }
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+
+		}
 
 	}
-	
+
 	/**
 	 * give this subroutine a sql query and it'll get the first result for you as a string.
 	 * @param sql
@@ -89,7 +89,7 @@ public class SqlTools {
 			PreparedStatement preStatement = conn.prepareStatement(sql);
 			//executing the query and then committing it before closing in the finally block.
 			ResultSet result = preStatement.executeQuery();		
-			if (!result.next() ) {    
+			if (!result.isBeforeFirst() ) {    
 				System.out.println("No patients that match this username/password combination:"+username+"/"+passw); 
 			} 
 			else {
@@ -200,7 +200,7 @@ public class SqlTools {
 		finally {
 			conn.close();
 		}
-		
+
 	}
 	public static int insertMoodObservation(String mOOD, String dTTM,
 			int patientId) throws SQLException {
@@ -221,7 +221,7 @@ public class SqlTools {
 		finally {
 			conn.close();
 		}
-		
+
 	}
 	/**
 	 *  this subroutine prints out everything in the result set. doesn't matter how many columns the result set has, 
@@ -238,10 +238,16 @@ public class SqlTools {
 					System.out.print(",");
 				}
 			}System.out.print("\n");
-			System.out.println("==============================================");
+			System.out.println("==============================================================");
 			while(observationData.next()){
 				for (int index=1;index<=columnCount;index++){
-					System.out.print(observationData.getObject(index).toString());
+					Object toprint = observationData.getObject(index);
+					if (toprint == null){
+						System.out.print("");
+					}else{
+						System.out.print(observationData.getObject(index).toString());	
+					}
+
 					if (index!=columnCount){//comma seperator not needed for the last element.
 						System.out.print(",");
 					}
@@ -254,7 +260,78 @@ public class SqlTools {
 
 	}
 
+	/**
+	 * This subroutine takes an insert statement and runs it on the database.
+	 * @param insertStatement
+	 * @return int number of rows affected
+	 * @throws SQLException 
+	 */
+	public static int InsertRunner(String insertStatement) throws SQLException{
+		Connection conn = makeMyConnection();
+		try{
+			//creating PreparedStatement object to execute query
+			PreparedStatement preStatement = conn.prepareStatement(insertStatement);
 
+			//executing the query and then committing it before closing in the finally block.
+			int result = preStatement.executeUpdate();		
+			conn.commit();
+
+			return result;
+		}
+		finally {
+			conn.close();
+		}		
+	}
+	public static int insertMessage(String toAddress, int patientId,
+			String usermessage) throws SQLException {
+		String sql = "insert into messages values (messages_seq.nextval,"+toAddress+","+patientId+",sysdate,'"+usermessage+"','N')";
+			return SqlTools.InsertRunner(sql);
+		
+	}
+	/**
+	 * returns a result set of the validation observation types that this patient can see.
+	 * @param patientId
+	 * @return resultset of observation names.
+	 * @throws SQLException 
+	 */
+	public static ResultSet ValidObservations(int patientId) throws SQLException {
+		Connection conn = makeMyConnection();
+		try{
+			//creating PreparedStatement object to execute query
+			PreparedStatement preStatement = conn.prepareStatement("select pname from problems where patientid ="+patientId);
+			//executing the query and then committing it before closing in the finally block.
+			ResultSet result = preStatement.executeQuery();		
+			String Hiv = "0=1";
+			String COPD = "0=1";
+			String HighRiskPregnancy = "0=1";
+			String Obesity = "0=1";
+			while (result.next()){
+				if (result.getString(1).equals("HIV")){
+					Hiv = "substr(association,1,1) = 1";
+				}else if (result.getString(1).equals("COPD")){
+					COPD = "substr(association,2,1) = 1";
+				}else if (result.getString(1).equals("High Risk Pregnancy")){
+					HighRiskPregnancy = "substr(association,3,1) = 1";
+				}else if (result.getString(1).equals("Obesity")){
+					Obesity = "substr(association,4,1) = 1";
+				}
+			}
+			//creating PreparedStatement object to execute query
+			preStatement = conn.prepareStatement("select obstype from observationtypes where ( "
+			+Hiv+" or "+COPD+" or "+HighRiskPregnancy+" or "+Obesity+")" );
+			//executing the query and then committing it before closing in the finally block.
+			result = preStatement.executeQuery();		
+
+			return result;
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+/*		finally {
+			conn.close();
+		}
+*/
+	}
 
 
 }
