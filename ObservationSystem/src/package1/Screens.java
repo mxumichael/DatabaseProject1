@@ -23,7 +23,7 @@ public class Screens {
 		try {
 			session.StartScreen();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		System.out.println("Goodbye, exiting program now");
@@ -58,7 +58,7 @@ public class Screens {
 				}
 
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 			System.out.println("??? please try again.");
@@ -290,272 +290,6 @@ public class Screens {
 	}
 	 */
 
-	private String viewDietObservations() {
-
-
-		try
-		{
-			//Pass the query and get results back
-			ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
-					"FROM DIET D, PATIENT P "            +
-					"WHERE D.patientid=P.patientid");
-
-			System.out.println("PatientID, Lastname, Firstname");
-			while(results.next())
-			{		
-				System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
-				//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
-			}
-		}
-		catch(SQLException e)
-		{		
-			// TODO Auto-generated catch block		
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-
-	private String viewWeightObservations() {
-
-
-		try
-		{
-			//Pass the query and get results back
-			ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
-					"FROM WEIGHT W, PATIENT P "            +
-					"WHERE W.patientid=P.patientid");
-
-			System.out.println("PatientID, Lastname, Firstname");
-			while(results.next())
-			{		
-				System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
-				//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
-			}
-		}
-		catch(SQLException e)
-		{		
-			// TODO Auto-generated catch block		
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-
-	private String viewExerciseObservations() {
-
-		try
-		{
-			//Pass the query and get results back
-			ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
-					"FROM EXERCISE E, PATIENT P "            +
-					"WHERE E.patientid=P.patientid");
-
-			System.out.println("PatientID, Lastname, Firstname");
-			while(results.next())
-			{		
-				System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
-				//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
-			}
-		}
-		catch(SQLException e)
-		{		
-			// TODO Auto-generated catch block		
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-
-	private String viewBPObservations() {
-
-		try
-		{
-			//Pass the query and get results back
-			ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
-					"FROM BloodPressure B, PATIENT P "            +
-					"WHERE B.patientid=P.patientid");
-
-			System.out.println("PatientID, Lastname, Firstname");
-			while(results.next())
-			{		
-				System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
-				//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
-			}
-		}
-		catch(SQLException e)
-		{		
-			// TODO Auto-generated catch block		
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-
-	private String viewETObservations() {
-		try
-		{
-			//Pass the query and get results back
-			ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
-					"FROM ExerciseTolerance ET, PATIENT P "            +
-					"WHERE ET.patientid=P.patientid");
-
-			System.out.println("PatientID, Lastname, Firstname");
-			while(results.next())
-			{		
-				System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
-				//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
-			}
-		}
-		catch(SQLException e)
-		{		
-			// TODO Auto-generated catch block		
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-
-	private String viewO2Observations() {
-
-
-		try
-		{
-			//Pass the query and get results back
-			ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
-					"FROM OxSaturation ET, PATIENT P "            +
-					"WHERE ET.patientid=P.patientid");
-
-			System.out.println("PatientID, Lastname, Firstname");
-			while(results.next())
-			{		
-				System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
-				//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
-			}
-		}
-		catch(SQLException e)
-		{		
-			// TODO Auto-generated catch block		
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-
-	private String viewPainObservations() {
-
-
-		try
-		{
-			//Pass the query and get results back
-			ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
-					"FROM PAIN A, PATIENT P "            +
-					"WHERE A.patientid=P.patientid");
-
-			System.out.println("PatientID, Lastname, Firstname");
-			while(results.next())
-			{		
-				System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
-				//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
-			}
-		}
-		catch(SQLException e)
-		{		
-			// TODO Auto-generated catch block		
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-
-	private String viewContrObservations() {
-
-
-		try
-		{
-			//Pass the query and get results back
-			ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
-					"FROM CONTRACTION C, PATIENT P "            +
-					"WHERE C.patientid=P.patientid");
-
-			System.out.println("PatientID, Lastname, Firstname");
-			while(results.next())
-			{		
-				System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
-				//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
-			}
-		}
-		catch(SQLException e)
-		{		
-			// TODO Auto-generated catch block		
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-	private String viewTempObservations() {
-
-
-		try
-		{
-			//Pass the query and get results back
-			ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
-					"FROM TEMPERATURE T, PATIENT P "            +
-					"WHERE T.patientid=P.patientid");
-
-			System.out.println("PatientID, Lastname, Firstname");
-			while(results.next())
-			{		
-				System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
-				//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
-			}
-		}
-		catch(SQLException e)
-		{		
-			// TODO Auto-generated catch block		
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-
-	private String viewMoodObservations() {
-
-
-		try
-		{
-			//Pass the query and get results back
-			ResultSet results = SqlTools.QueryMeThisArray("SELECT DISTINCT p.patientid, p.lname, p.fname " +
-					"FROM MOOD M, PATIENT P "            +
-					"WHERE M.patientid=P.patientid");
-
-			System.out.println("PatientID, Lastname, Firstname");
-			while(results.next())
-			{		
-				System.out.println(results.getString(1) + "," + results.getString(2) + "," +  results.getString(3)  );
-				//System.out.println(results.getString("qty") + results.getString("rec_dttm") + results.getString("fname")  );
-			}
-		}
-		catch(SQLException e)
-		{		
-			// TODO Auto-generated catch block		
-			e.printStackTrace();
-			return null;
-		}
-
-		return null;
-	}
-
-
 	public String StartScreen() throws IOException{
 		String userinput = "";
 		this.in = new BufferedReader(new InputStreamReader(System.in)); 
@@ -585,7 +319,7 @@ public class Screens {
 	}
 
 	private String CreateUserScreen() throws IOException {
-		// TODO Auto-generated method stub extracomments
+		//  Auto-generated method stub extracomments
 		String userinput = "";
 		for (int x= 0; x< LOOP_LIMIT; x++){
 			System.out.println("Create User Screen (under construction)                                ");
@@ -809,157 +543,14 @@ public class Screens {
 			System.out.println("Record inserted");
 			return rowsAffected;
 		} catch (SQLException e) { 
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("something went wrong in EnterObservationSpecifics, returning to previous screen.");
 		return 0;
 	}
 
-	/*		String userChoice = "";
-
-		for (int x= 0; x< LOOP_LIMIT; x++){
-			System.out.println("  1. Diet      ");
-			System.out.println("  2. Weight    ");
-			System.out.println("  3. Exercise  ");
-			System.out.println("  4. Mood      ");
-			System.out.println("  5. Other     ");
-			System.out.println("  6. Back      ");
-			System.out.println("  Enter choice                  ");
-			userChoice = in.readLine();
-			if (userChoice.equals("1")){
-				this.DietObservation();
-			} else if (userChoice.equals("2")){
-				this.WeightObservation();
-			} else if (userChoice.equals("3")){
-				this.ExerciseObservation();
-			} else if (userChoice.equals("4")){
-				this.MoodObservation();
-			} else if (userChoice.equals("5")){
-				this.OtherObservation();
-			} else if (userChoice.equals("6")){
-				return("6. Back");
-			}
-		}
-		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
-		return LOOP_LIMIT_ERROR;
-	}
-	 */
-	private void OtherObservation() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private String MoodObservation() {
-		// MOODID, PATIENTID, MOOD, DTTM, REC_DTTM
-		String MOOD = "";
-		String DTTM = "";
-		for (int x= 0; x< LOOP_LIMIT; x++){
-			System.out.println("--Enter in your--");
-			try {
-				System.out.print("MOOD:");
-				MOOD = in.readLine();
-				System.out.print("Date time of observation (YYYYMMDD HH:MI AM/PM):");
-				DTTM = in.readLine();
-				SqlTools.insertMoodObservation(MOOD,DTTM,patientId);
-				return "Observation Inserted Successfully";
-			}catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("observation input not Valid, please try again.");
-			}
-			catch (IOException e1) {
-				e1.printStackTrace();
-			}
-
-		}
-		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
-		return LOOP_LIMIT_ERROR;		
-	}
-
-	private String ExerciseObservation() {
-		// EXERCISEID, PATIENTID, DESCRIPTION, DURATION, DTTM, REC_DTTM
-		String DESCRIPTION = "";
-		String DURATION = "";
-		String DTTM = "";
-		for (int x= 0; x< LOOP_LIMIT; x++){
-			System.out.println("--Enter in your--");
-			try {
-				System.out.print("Description:");
-				DESCRIPTION = in.readLine();
-				System.out.print("DURATION:");
-				DURATION = in.readLine();
-				System.out.print("Date time of observation (YYYYMMDD HH:MI AM/PM):");
-				DTTM = in.readLine();
-				SqlTools.insertExerciseObservation(DESCRIPTION,DURATION,DTTM,patientId);
-				return "Observation Inserted Successfully";
-			}catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("observation input not Valid, please try again.");
-			}
-			catch (IOException e1) {
-				e1.printStackTrace();
-			}
-
-		}
-		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
-		return LOOP_LIMIT_ERROR;		
-	}
-
-	private String WeightObservation() {
-		// WEIGHTID, PATIENTID, QTY, DTTM, REC_DTTM
-		String QTY = "";
-		String DTTM = "";
-		for (int x= 0; x< LOOP_LIMIT; x++){
-			System.out.println("--Enter in your--");
-			System.out.print("Weight:");
-			try {
-				QTY = in.readLine();
-				System.out.print("Date time of observation (YYYYMMDD HH:MI AM/PM):");
-				DTTM = in.readLine();
-				SqlTools.insertWeightObservation(QTY,DTTM,patientId);
-				return "Observation Inserted Successfully";
-			}catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("observation input not Valid, please try again.");
-			}
-			catch (IOException e1) {
-				e1.printStackTrace();
-			}
-
-		}
-		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
-		return LOOP_LIMIT_ERROR;		
-	}
-
-	private String DietObservation() throws IOException {
-		// TODO Auto-generated method stub
-		String description = "";
-		String amount = "";
-		String dateTime = "";
-		for (int x= 0; x< LOOP_LIMIT; x++){
-			System.out.println("  Enter:                  ");
-			System.out.print("What food or drink was consumed:");
-			description = in.readLine();
-			System.out.print("Amount in servings:");
-			amount = in.readLine();
-			System.out.print("Date time of observation (YYYYMMDD HH:MI AM/PM):");
-			dateTime = in.readLine();
-
-			try {
-				SqlTools.insertDietObservation(description,amount,dateTime,patientId);
-				return "Observation Inserted Successfully";
-			}catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.out.println("observation input not Valid, please try again.");
-			}
-		}
-		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
-		return LOOP_LIMIT_ERROR;		
-	}
 
 
 	//JWH CHANGES
