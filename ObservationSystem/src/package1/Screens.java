@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -688,7 +689,7 @@ public class Screens {
 							SqlTools.insertMessage(toAddress,this.patientId,usermessage);
 							System.out.println("message sent. returning to previous screen.");
 						}
-						
+
 					}
 				} else if (userChoice.equals("4")){
 					return("4. Back");
@@ -708,61 +709,117 @@ public class Screens {
 
 	private String ViewObservations() throws IOException {
 		String userChoice = "";
-
-		menulabel:
-			for (int x= 0; x< LOOP_LIMIT; x++){
-				System.out.println("--View observation type--      ");
-				try {
+		for (int x= 0; x< LOOP_LIMIT; x++){
+			System.out.println("--View observation type--      ");
+			try {
 				ResultSet  observationTypes = SqlTools.ValidObservations(this.patientId);
 				ArrayList<String>  observationTypeList= new ArrayList<String>();
 				while (observationTypes.next()){
 					observationTypeList.add(observationTypes.getString(1));
-					System.out.println(observationTypeList.get(observationTypeList.size()-1));
+					System.out.println("  "+observationTypeList.size()+". "+observationTypeList.get(observationTypeList.size()-1));
 				}
 				System.out.println("  0. Back      ");
-/*				System.out.println("  1. Diet      ");
-				System.out.println("  2. Weight    ");
-				System.out.println("  3. Exercise  ");
-				System.out.println("  4. Mood      ");
-				System.out.println("  5. Other     ");
-				System.out.println("  6. Back      ");
-*/				
 				System.out.println("  Enter choice                  ");
 				userChoice = in.readLine();
 				ResultSet observationData=null;
-				
-					if (userChoice.equals("1")){
-						observationData =SqlTools.QueryMeThisArray("select * from Diet where patientId ="+this.patientId);
-					} else if (userChoice.equals("2")){
-						observationData =SqlTools.QueryMeThisArray("select * from Weight where patientId ="+this.patientId);
-					} else if (userChoice.equals("3")){
-						observationData =SqlTools.QueryMeThisArray("select * from Exercise where patientId ="+this.patientId);
-					} else if (userChoice.equals("4")){
-						observationData =SqlTools.QueryMeThisArray("select * from Mood where patientId ="+this.patientId);
-					} else if (userChoice.equals("5")){
-						System.out.println("not implemented yet");
-						//observationData =SqlTools.QueryMeThisArray("select * from Other where patientId ="+this.patientId);
-					} else if (userChoice.equals("6")){
-						return("6. Back");
-					} else{
-						System.out.println("invalid choice, please try again.");
-						continue menulabel; //The continue statement skips the current iteration of a for, while , or do-while loop. evaluates the boolean expression that controls the loop.
-					}
-					//time to print all the things in the result set
-					SqlTools.PrintResultSet(observationData);
+
+				if (userChoice.equals("0")){
+					return("0. Back");
+				} else {
+					observationData =SqlTools.QueryMeThisArray("select * from "+observationTypeList.get(Integer.parseInt(userChoice)-1)+" where patientId ="+this.patientId);
 				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+				//time to print all the things in the result set
+				SqlTools.PrintResultSet(observationData);
 			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
 		return LOOP_LIMIT_ERROR;
 	}
 
 	private String EnterObservations() throws IOException {
-		// TODO Auto-generated method stub
-
+		//mostly copied from view observations. if any changes occur there, might want to replicate them here.
+		//a better programmer with more time would probably combine the two, but not me :P
 		String userChoice = "";
+		for (int x= 0; x< LOOP_LIMIT; x++){
+			System.out.println("--Pick observation type--      ");
+			try {
+				ResultSet  observationTypes = SqlTools.ValidObservations(this.patientId);
+				ArrayList<String>  observationTypeList= new ArrayList<String>();
+				while (observationTypes.next()){
+					observationTypeList.add(observationTypes.getString(1));
+					System.out.println("  "+observationTypeList.size()+". "+observationTypeList.get(observationTypeList.size()-1));
+				}
+				System.out.println("  0. Back      ");
+				System.out.println("  Enter choice                  ");
+				userChoice = in.readLine();
+				if (userChoice.equals("0")){
+					return("0. Back");
+				} else {
+					EnterObservationSpecifics(observationTypeList.get(Integer.parseInt(userChoice)-1));
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
+		return LOOP_LIMIT_ERROR;
+	}
+	private int EnterObservationSpecifics(String TableName) {
+		String sql = "select * from "+TableName+" where rownum <=1";
+		ResultSet results;
+		try {
+			results = SqlTools.QueryMeThisArray(sql);
+			ResultSetMetaData metadata= results.getMetaData();
+			String insertStatement="insert into "+TableName+" values ("+TableName+"_seq.nextval "; //this will hold the user inputs in a sql insert friendly way.
+			System.out.println("===entering in observation for "+TableName +"===");
+			for (int colNum=2;colNum<=metadata.getColumnCount();colNum++){//starting with column 2 because the first one is always the primary key
+				if (metadata.getColumnName(colNum).equals("REC_DTTM")){
+					insertStatement = insertStatement + " , sysdate";
+					System.out.println("using sysdate as recording time.");
+				}else if (metadata.getColumnName(colNum).equals("PATIENTID")){
+					insertStatement = insertStatement + " , "+this.patientId+"";
+					System.out.println("using "+this.patientId +" as patientid");
+				}
+				else{
+					int columnType = metadata.getColumnType(colNum);
+					if (columnType == Types.TIMESTAMP){
+						System.out.println("Input date (YYYYMMDD HH:MI AM/PM) for column: "+metadata.getColumnName(colNum));
+						insertStatement = insertStatement + " , to_date('" +in.readLine()+"','YYYYMMDD HH:MI AM')";
+					}else if (columnType == Types.NUMERIC){
+						System.out.println("Input number for column: "+metadata.getColumnName(colNum));
+						insertStatement = insertStatement + " , " +in.readLine()+"";
+					}else if (columnType == Types.VARCHAR){
+						System.out.println("Input varchar for column: "+metadata.getColumnName(colNum));
+						insertStatement = insertStatement + " , '" +in.readLine()+"'";
+					}else {
+						System.out.println("unknown sql type of column. Type ="+columnType);
+						System.out.println("see http://docs.oracle.com/javase/7/docs/api/constant-values.html#java.sql.Types.ARRAY for details and ask dev team to add this sql type and give them this stack trace ");
+						for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+							System.out.println(ste);
+						}
+					}
+				}
+			}
+			insertStatement = insertStatement + ")";
+			int rowsAffected = SqlTools.InsertRunner(insertStatement);
+			System.out.println("Record inserted");
+			return rowsAffected;
+		} catch (SQLException e) { 
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("something went wrong in EnterObservationSpecifics, returning to previous screen.");
+		return 0;
+	}
+
+	/*		String userChoice = "";
 
 		for (int x= 0; x< LOOP_LIMIT; x++){
 			System.out.println("  1. Diet      ");
@@ -790,7 +847,7 @@ public class Screens {
 		System.out.println("reached Looplimit "+ LOOP_LIMIT + " in login screen, going to previous screen");
 		return LOOP_LIMIT_ERROR;
 	}
-
+	 */
 	private void OtherObservation() {
 		// TODO Auto-generated method stub
 
