@@ -1,3 +1,5 @@
+--John Holmes and Michael Xu
+
 --Retrieval Queries
 
 --QUERY 1. Find patients with the lowest weight amongst HIV patients.
@@ -27,7 +29,9 @@ AND bp.systolic  =
   )
   
 --QUERY 3. Find patients who have healthfriends with no outstanding alerts. 
---TBD
+SELECT DISTINCT P.PATIENTID, P.FNAME, P.LNAME, HF.HEALTHFRIENDID
+FROM HEALTHFRIEND HF, PATIENT P
+WHERE P.PATIENTID = HF.PATIENTID AND NOT EXISTS (SELECT * FROM ALERTS ALR1 WHERE HF.healthfriendID = ALR1.patientID AND ALR1.VIEWED='N')
 
 --QUERY 4. Find patients who live in same city as healthfriend.
 SELECT pat1.patientid,pat1.fname,pat2.patientid,pat2.fname,pat1.city,pat2.city,hf.dttm
@@ -38,9 +42,9 @@ INNER JOIN Patient pat2
 ON pat2.patientid  = hf.healthfriendid where pat1.city = pat2.city
 
 --QUERY 5. For PatientX, list their healthfriends, ordered by date in which friendships were initiated.
-SELECT HealthFriend.HealthFriendID
+SELECT HealthFriend.HealthFriendID, HealthFriend.dttm
 FROM HEALTHFRIEND
-WHERE HEALTHFRIEND.PATIENTID=6
+WHERE HEALTHFRIEND.PATIENTID=5
 ORDER BY DTTM DESC
 
 --REPORTING QUERY
@@ -112,3 +116,10 @@ group by pat.patientid,pat.fname
 
 --3. For each patient, and each of their healthfriends, list the number of lingering alerts of the healthfriend.
 --TBD
+SELECT P.PATIENTID, HF.HEALTHFRIENDID, COUNT(*)
+FROM PATIENT P, HEALTHFRIEND HF, ALERTS ALR
+WHERE P.PATIENTID=HF.PATIENTID AND HF.HEALTHFRIENDID=ALR.PATIENTID AND ALR.VIEWED='N'
+GROUP BY P.PATIENTID, HF.HEALTHFRIENDID
+
+
+

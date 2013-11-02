@@ -1,3 +1,7 @@
+/*
+ * Authors: Michael Xu, John Holmes
+ * Project 1
+ */
 package package1;
 
 import java.sql.Connection;
@@ -16,8 +20,8 @@ public class SqlTools {
 
 		//properties for creating connection to Oracle database
 		Properties props = new Properties();
-		props.setProperty("user", "mxu");
-		props.setProperty("password", "abc123");
+		props.setProperty("user", "jwholme2");
+		props.setProperty("password", "sbct3st!");
 
 		//creating connection to Oracle database using JDBC
 		Connection conn = DriverManager.getConnection(url,props);
@@ -31,9 +35,9 @@ public class SqlTools {
 	 */
 	public static ResultSet QueryMeThisArray(String sql) throws SQLException{
 		Connection conn;
-
+		
 		//We will be storing the data as a table
-
+		
 		try {
 			conn = makeMyConnection();
 			//JWH UPDATE 10/27
@@ -42,15 +46,15 @@ public class SqlTools {
 			//While we have a row of data...
 			return result;
 		}		
-		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-
-		}
+		 catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return null;
+	
+		 }
 
 	}
-
+	
 	/**
 	 * give this subroutine a sql query and it'll get the first result for you as a string.
 	 * @param sql
@@ -89,7 +93,7 @@ public class SqlTools {
 			PreparedStatement preStatement = conn.prepareStatement(sql);
 			//executing the query and then committing it before closing in the finally block.
 			ResultSet result = preStatement.executeQuery();		
-			if (!result.isBeforeFirst() ) {    
+			if (!result.next() ) {    
 				System.out.println("No patients that match this username/password combination:"+username+"/"+passw); 
 			} 
 			else {
@@ -200,7 +204,7 @@ public class SqlTools {
 		finally {
 			conn.close();
 		}
-
+		
 	}
 	public static int insertMoodObservation(String mOOD, String dTTM,
 			int patientId) throws SQLException {
@@ -221,7 +225,7 @@ public class SqlTools {
 		finally {
 			conn.close();
 		}
-
+		
 	}
 	/**
 	 *  this subroutine prints out everything in the result set. doesn't matter how many columns the result set has, 
@@ -238,7 +242,7 @@ public class SqlTools {
 					System.out.print(",");
 				}
 			}System.out.print("\n");
-			System.out.println("==============================================================");
+			System.out.println("==============================================");
 			while(observationData.next()){
 				for (int index=1;index<=columnCount;index++){
 					Object toprint = observationData.getObject(index);
@@ -259,6 +263,7 @@ public class SqlTools {
 		}
 
 	}
+
 
 	/**
 	 * This subroutine takes an insert statement and runs it on the database.
@@ -288,15 +293,19 @@ public class SqlTools {
 			return SqlTools.InsertRunner(sql);
 		
 	}
-	/**
+
+/**
+
 	 * returns a result set of the validation observation types that this patient can see.
 	 * @param patientId
 	 * @return resultset of observation names.
 	 * @throws SQLException 
 	 */
+
 	public static ResultSet ValidObservations(int patientId) throws SQLException {
 		Connection conn = makeMyConnection();
 		try{
+
 			//creating PreparedStatement object to execute query
 			PreparedStatement preStatement = conn.prepareStatement("select pname from problems where patientid ="+patientId);
 			//executing the query and then committing it before closing in the finally block.
@@ -324,7 +333,9 @@ public class SqlTools {
 
 			return result;
 		} catch (SQLException e){
+
 			e.printStackTrace();
+
 		}
 		return null;
 /*		finally {
@@ -332,6 +343,24 @@ public class SqlTools {
 		}
 */
 	}
-
+	/**
+	 * give this subroutine a sql DML query and it'll execute!
+	 * @param sql
+	 * @return
+	 */
+	public static String CreateMeThis(String sql){
+		Connection conn;
+		try {
+			conn = makeMyConnection();
+			PreparedStatement preStatement = conn.prepareStatement(sql);
+			preStatement.executeUpdate(sql);		
+			return null;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 
 }

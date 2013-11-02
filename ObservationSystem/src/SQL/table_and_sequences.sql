@@ -1,3 +1,4 @@
+--John Holmes and Michael Xu
 
 /** DROP TABLES */
 DROP table PAIN                   ;
@@ -13,8 +14,6 @@ DROP table OXSATURATION           ;
 DROP table HEALTHFRIEND           ;
 DROP table PROBLEMS               ;
 DROP table ALERTS                 ;
-DROP table CUSTOMOBSERVATIONS        ;
-DROP table CUSTOMOBSERVATIONTYPES        ;
 drop table MESSAGES               ; 
 drop table apples ;
 DROP table PATIENT                ;
@@ -36,10 +35,8 @@ DROP SEQUENCE EXERCISETOLERANCE_seq      ;
 DROP SEQUENCE PROBLEMS_seq               ;
 DROP SEQUENCE HEALTHSUPPORTER_seq        ;
 DROP SEQUENCE ALERTS_SEQ                 ;
-Drop Sequence MESSAGES_SEQ
+Drop Sequence MESSAGES_SEQ               ;
 DROP SEQUENCE PATIENTIDS_seq             ;
-DROP SEQUENCE CustomObservationTypes_Seq     ;
-DROP SEQUENCE CustomObservations_Seq     ;
 drop sequence ObservationTypes_seq ; 
 drop sequence Apples_seq;
 /*
@@ -170,7 +167,6 @@ viewed varchar2(1) not null check (viewed in ('Y','N')),
 CONSTRAINT messageKey PRIMARY KEY(Messageid),
 CONSTRAINT fk_messages_patientid FOREIGN KEY (patientid) REFERENCES Patient
 );
-
 --OBSERVATIONS
 
 --BEGIN DIET
